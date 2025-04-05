@@ -7,6 +7,10 @@ import { Navigate, Route, Routes , useParams , useLocation} from "react-router";
 import {FaAlignJustify} from "react-icons/fa"
 import PeopleTable from "./People/Table";
 import { useSelector } from "react-redux";
+import Quizzes from "./Quizzes";
+import QuizDetails from "./Quizzes/quizDetails";
+import QuizEditor from "./Quizzes/quizEditor";
+import QuestionEditor from "./Quizzes/questionsEdtior";
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
   const course = courses.find((course) => course._id === cid);
@@ -41,6 +45,11 @@ export default function Courses({ courses }: { courses: any[]; }) {
               <Route path="Assignments" element={<Assignments />} />
               <Route path="Assignments/:assignmentId" element={<AssignmentEditor />} />
               {/* {assignmentRoutes} */}
+              <Route path="Quizzes" element={<Quizzes/>} />
+              <Route path="Quizzes/:qid" element={<QuizDetails/>} />
+              <Route path ="Quizzes/:qid/Editor" element={<QuizEditor/>} />
+              <Route path ="Quizzes/:qid/Editor/Details" element={<QuizEditor/>} />
+              <Route path ="Quizzes/:qid/Editor/Questions" element={<QuestionEditor/>} />
               <Route path="People" element={<PeopleTable />} />
             </Routes>
             </div>
