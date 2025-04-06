@@ -24,7 +24,11 @@ export default function QuizEditor() {
         <div className="flex-fill">
                 <Routes>
                     <Route path ="Quizzes/:qid/Editor/Details" element={<QuizEditor/>} />
-                    <Route path ="Quizzes/:qid/Editor/Questions" element={<QuestionEditor/>} />
+                    <Route path ="Quizzes/:qid/Editor/Questions" element={<QuestionEditor moduleName={""} setModuleName={function (title: string): void {
+                     throw new Error("Function not implemented.");
+                 } } addModule={function (): void {
+                     throw new Error("Function not implemented.");
+                 } }/>} />
                 </Routes>
             </div>
     </div>

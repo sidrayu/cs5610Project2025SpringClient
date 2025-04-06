@@ -49,7 +49,11 @@ export default function Courses({ courses }: { courses: any[]; }) {
               <Route path="Quizzes/:qid" element={<QuizDetails/>} />
               <Route path ="Quizzes/:qid/Editor" element={<QuizEditor/>} />
               <Route path ="Quizzes/:qid/Editor/Details" element={<QuizEditor/>} />
-              <Route path ="Quizzes/:qid/Editor/Questions" element={<QuestionEditor/>} />
+              <Route path ="Quizzes/:qid/Editor/Questions" element={<QuestionEditor moduleName={""} setModuleName={function (title: string): void {
+              throw new Error("Function not implemented.");
+            } } addModule={function (): void {
+              throw new Error("Function not implemented.");
+            } }/>} />
               <Route path="People" element={<PeopleTable />} />
             </Routes>
             </div>
