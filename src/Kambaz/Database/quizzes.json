@@ -1,0 +1,55 @@
+{
+    "_id": "quiz123",
+    "type": "Graded Quiz", 
+    "points": 100, 
+    "group": "Quizzes", 
+    "shuffle": true,
+    "timeLimit": 20, 
+    "multipleAttempts": false,
+    "numberAttempts": 1,
+    "showAnswers": "", 
+    "accessCode": "", 
+    "oneQuestionAtATime": true,
+    "webcam": false,
+    "lock": false,
+    "dueDate": "2025-04-10T23:59:00Z",
+    "availableDate": "2025-04-05T08:00:00Z",
+    "untilDate": "2025-04-15T23:59:00Z",
+    "questions": [
+      {
+        "_id": "q26",
+        "title": "New Question",
+        "type": "multipleChoice", 
+        "points": 20,
+        "question": "What is the capital of France?",
+        "choices": [
+          "Berlin",
+          "Madrid",
+          "Paris",
+          "Rome"
+        ],
+        "answer": 2 
+      },
+      {
+        "_id": "q27",
+        "title": "True or False Example",
+        "type": "trueFalse",
+        "points": 10,
+        "question": "The Earth is flat.",
+        "choices": [
+          "True",
+          "False"
+        ],
+        "answer": 1
+      },
+      {
+        "_id": "q28",
+        "title": "Fill in the blank",
+        "type": "fillInTheBlank",
+        "points": 15,
+        "question": "The chemical symbol for water is ___",
+        "answer": "H2O"
+      }
+    ]
+  }
+  
