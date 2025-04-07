@@ -1,4 +1,4 @@
-import { Button, FormControl, ListGroup } from "react-bootstrap";
+import { Button, FormControl, ListGroup, FormLabel} from "react-bootstrap";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { TiPencil } from "react-icons/ti";
 
@@ -12,7 +12,10 @@ export default function FillInAnswerItem({ fillinanswer, deleteFillInAnswer, set
         key={fillinanswer.id}
         className="d-flex justify-content-between align-items-center border-0 rounded-0 mb-2"
         >
-            <FormControl
+                <FormLabel className="mb-0 me-3">
+                    Possible Answer:
+                </FormLabel>
+                <FormControl
                 value={fillinanswer.title}
                 onChange={(e) =>
                 setFillInAnswer({ ...fillinanswer, title: e.target.value })
