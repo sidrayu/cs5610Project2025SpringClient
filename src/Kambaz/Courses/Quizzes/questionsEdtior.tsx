@@ -6,16 +6,16 @@ import { useLocation } from "react-router-dom";
 import MultipleChoiceQuestionEditor from "./MultipleChoiceQuestionEditor";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-
-export default function QuestionEditor({
-    moduleName,
-    setModuleName,
-    addModule,
-}: {
-    moduleName: string;
-    setModuleName: (title: string) => void;
-    addModule: () => void;
-}) {
+import ShowQuestionsPage from "./ShowQuestionsPage";
+export default function QuestionEditor() {
+//     questionName,
+//     setQuestion,
+//     addQuestion,
+// }: {
+//     questionName: string;
+//     setQuestion: (title: string) => void;
+//     addQuestion: () => void;
+// }) {
     const { pathname } = useLocation();
      const [show, setShow] = useState(false);
      const handleClose = () => setShow(false);
@@ -36,7 +36,8 @@ export default function QuestionEditor({
                     as={Link}>Questions</Nav.Link>
                 </Nav.Item>
             </Nav>
-
+            <br /><br /><br />
+            <ShowQuestionsPage />
             <div className="d-flex justify-content-center mt-3 mb-3">
             <Button variant="danger" onClick={handleShow} >
             <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
@@ -53,8 +54,7 @@ export default function QuestionEditor({
                 <Button variant="danger">Save</Button>
             </div>
 
-            <MultipleChoiceQuestionEditor show={show} handleClose={handleClose} 
-       moduleName={moduleName} setModuleName={setModuleName} addModule={addModule} />
+            <MultipleChoiceQuestionEditor show={show} handleClose={handleClose} />
 
 
         </div>

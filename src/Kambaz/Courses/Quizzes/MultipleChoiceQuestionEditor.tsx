@@ -14,9 +14,9 @@ import FillInAnswerItem from "./FillInAnswerRedux/FillInAnswerItem";
 
 import { useState } from "react";
 
-export default function MultipleChoiceQuestionEditor({ show, handleClose, addModule,}: {
-    show: boolean; handleClose: () => void;  moduleName: string; setModuleName: (name: string) => void;
-    addModule: () => void; } ) {
+export default function MultipleChoiceQuestionEditor({ show, handleClose,}: {
+    show: boolean; handleClose: () => void;  
+    } ) {
     // const [todos, setTodos] = useState<{ id: string; title: string }[]>([]);
     const [answers, setAnswers] = useState([
         { id: "1", title: "4"  },
@@ -62,6 +62,8 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, addMod
       };
 
     const [selectedOption, setSelectedOption] = useState("multipleChoice");
+    // const [questions, setQuestions] = useState("How much is 2+2?");
+    // const [points, setPoints] = useState(4);
 
 
     return (
@@ -241,7 +243,7 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, addMod
                     <Button variant="secondary" onClick={handleClose}> Cancel </Button>
                     <Button variant="danger"
                     onClick={() => {
-                    addModule();
+                    
                     handleClose();
                     }} > Update Question </Button>
                 </Modal.Footer>
