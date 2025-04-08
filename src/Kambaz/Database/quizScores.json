@@ -1,0 +1,37 @@
+{
+  "quizzes": [
+    {
+      "quiz": "quiz123",
+      "users": [
+        {
+          "userId": "234",
+          "attempts": [
+            {
+              "attemptId": "a1",
+              "date": "2024-03-14T10:15:00Z",
+              "score": 75,
+              "timeSpent": 1200
+            },
+            {
+              "attemptId": "a2",
+              "date": "2024-03-15T14:30:00Z",
+              "score": 85,
+              "timeSpent": 900
+            }
+          ]
+        },
+        {
+          "userId": "456",
+          "attempts": [
+            {
+              "attemptId": "a4",
+              "date": "2024-03-14T16:45:00Z",
+              "score": 75,
+              "timeSpent": 1100
+            }
+          ]
+        }
+      ]
+    }
+  ]
+} 

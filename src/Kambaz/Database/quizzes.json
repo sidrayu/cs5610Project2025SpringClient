@@ -1,5 +1,8 @@
-{
+[ {
     "_id": "quiz123",
+    "course": "RS101",
+    "title": "Quiz1 - HTML",
+    "isPublished" : true,
     "type": "Graded Quiz", 
     "points": 100, 
     "group": "Quizzes", 
@@ -51,5 +54,63 @@
         "answer": "H2O"
       }
     ]
+  },
+  {
+    "_id": "quiz456",
+    "course": "RS101",
+    "title": "Quiz2 - CSS",
+    "isPublished": false,
+    "type": "Graded Quiz",
+    "points": 75,
+    "group": "Quizzes",
+    "shuffle": true,
+    "timeLimit": 15,
+    "multipleAttempts": true,
+    "numberAttempts": 3,
+    "showAnswers": "",
+    "accessCode": "",
+    "oneQuestionAtATime": true,
+    "webcam": false,
+    "lock": false,
+    "dueDate": "2025-05-15T23:59:00Z",
+    "availableDate": "2025-05-01T08:00:00Z",
+    "untilDate": "2025-05-20T23:59:00Z",
+    "questions": [
+      {
+        "_id": "q29",
+        "title": "CSS Selectors",
+        "type": "multipleChoice",
+        "points": 25,
+        "question": "Which CSS selector has the highest specificity?",
+        "choices": [
+          "Class selector (.class)",
+          "ID selector (#id)",
+          "Element selector (p)",
+          "Universal selector (*)"
+        ],
+        "answer": 1
+      },
+      {
+        "_id": "q30",
+        "title": "CSS Box Model",
+        "type": "trueFalse",
+        "points": 20,
+        "question": "The CSS box model consists of content, padding, border, and margin.",
+        "choices": [
+          "True",
+          "False"
+        ],
+        "answer": 0
+      },
+      {
+        "_id": "q31",
+        "title": "CSS Properties",
+        "type": "fillInTheBlank",
+        "points": 30,
+        "question": "The CSS property used to change the text color is ___",
+        "answer": "color"
+      }
+    ]
   }
+]
   
