@@ -20,7 +20,8 @@ export default function QuizDetails() {
             day: 'numeric',
             hour: 'numeric',
             minute: 'numeric',
-            hour12: true
+            hour12: true,
+            timeZone: 'UTC'
         }).replace(',', ' at');
     };
 
