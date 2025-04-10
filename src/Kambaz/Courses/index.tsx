@@ -11,6 +11,9 @@ import Quizzes from "./Quizzes";
 import QuizDetails from "./Quizzes/quizDetails";
 import QuizEditor from "./Quizzes/quizEditor";
 import QuestionEditor from "./Quizzes/questionsEdtior";
+import QuizPreview from "./Quizzes/quizPreview";
+import QuizStart from "./Quizzes/quizStart";
+
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
   const course = courses.find((course) => course._id === cid);
@@ -47,6 +50,8 @@ export default function Courses({ courses }: { courses: any[]; }) {
               {/* {assignmentRoutes} */}
               <Route path="Quizzes" element={<Quizzes/>} />
               <Route path="Quizzes/:qid" element={<QuizDetails/>} />
+              <Route path="Quizzes/:qid/Preview" element={<QuizPreview/>} />
+              <Route path="Quizzes/:qid/Start" element={<QuizStart/>} />
               <Route path ="Quizzes/:qid/Editor" element={<QuizEditor/>} />
               <Route path ="Quizzes/:qid/Editor/Details" element={<QuizEditor/>} />
               <Route path ="Quizzes/:qid/Editor/Questions" element={<QuestionEditor/>} />

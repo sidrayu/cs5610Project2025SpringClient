@@ -97,13 +97,18 @@ export default function Quizzes() {
 
                     <ListGroup className="wd-lessons rounded-0">
                         {quizzes
-                            .filter((quiz: any) => quiz.course === cid)
+                            .filter((quiz: any) => 
+                                quiz.course === cid && 
+                                (isFaculty || 
+                                 (quiz.visibleTo && quiz.visibleTo.includes("STUDENT")) || 
+                                 (quiz.isPublished && !quiz.visibleTo))
+                            )
                             .map((quiz: any) => (
                                 <ListGroup.Item className="wd-lesson p-3 ps-1 d-flex align-items-center">
                                     <IoRocketOutline className="me-2 fs-3 ms-3 text-success" />
 
                                     <Form.Group controlId={`quiz-${quiz._id}`} className="mb-3">
-                                        {isFaculty ? (
+                       
                                             <Form.Label>
                                                 <Link
                                                     to={`/Kambaz/Courses/${cid}/Quizzes/${quiz._id}`}
@@ -112,9 +117,8 @@ export default function Quizzes() {
                                                     {quiz.title}
                                                 </Link>
                                             </Form.Label>
-                                        ) : (
-                                            <Form.Label>{quiz.title}</Form.Label>
-                                        )}
+                                        
+                                        
                                         <br />
                                         <Form.Label>
                                             <p id={`wd-${quiz._id}`}>

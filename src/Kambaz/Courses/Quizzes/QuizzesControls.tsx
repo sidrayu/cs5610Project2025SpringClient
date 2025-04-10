@@ -20,7 +20,7 @@ export default function QuizzesControls() {
             course: cid,
             title: "New Quiz",
             description: "New Quiz Description",
-            points: 100,
+            points: 0,
             startdate: "",
             duedate: "",
             untildate: "",
