@@ -31,7 +31,11 @@ const quizzesSlice = createSlice({
     },
     togglePublish: (state, { payload: quizId }) => {
       state.quizzes = state.quizzes.map((q) =>
-        q._id === quizId ? { ...q, isPublished: !q.isPublished } : q
+        q._id === quizId ? { 
+          ...q, 
+          isPublished: !q.isPublished,
+          visibleTo: !q.isPublished ? ["FACULTY", "STUDENT"] : ["FACULTY"]
+        } : q
       );
     }
   },
