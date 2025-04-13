@@ -52,7 +52,11 @@
         "type": "fillInTheBlank",
         "points": 15,
         "question": "The chemical symbol for water is ___",
-        "answer": "H2O"
+        "answers": [
+          "H2O",
+          "H2o",
+          "h2o"
+        ]
       }
     ]
   },
@@ -110,7 +114,12 @@
         "type": "fillInTheBlank",
         "points": 30,
         "question": "The CSS property used to change the text color is ___",
-        "answer": "color"
+        "answer": "color",
+        "answers": [
+          "color",
+          "Color",
+          "COLOR"
+        ]
       }
     ]
   }
