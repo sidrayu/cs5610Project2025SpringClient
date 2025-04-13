@@ -9,63 +9,164 @@ import AnswerReduxItem from "./AnswerRedux/AnswerReduxItem";
 import { ListGroup } from "react-bootstrap";
 import FillInAnswerForm from "./FillInAnswerRedux/FillInAnswerForm";
 import FillInAnswerItem from "./FillInAnswerRedux/FillInAnswerItem";
-
-
-
 import { useState } from "react";
+import { useEffect } from "react";
 
-export default function MultipleChoiceQuestionEditor({ show, handleClose,}: {
-    show: boolean; handleClose: () => void;  
+export default function MultipleChoiceQuestionEditor({ show, handleClose, questions, setQuestions,
+    curQuestionIndex
+}: {
+    show: boolean; handleClose: () => void; questions: any[];
+    setQuestions: (questions: any[]) => void;
+    curQuestionIndex: number;
     } ) {
-    // const [todos, setTodos] = useState<{ id: string; title: string }[]>([]);
     const [answers, setAnswers] = useState([
         { id: "1", title: "4"  },
         { id: "2", title: "5"  },
         { id: "3", title: "6"  },
         { id: "4", title: "7"  },
     ]);
-      const [answer, setAnswer] = useState({ id: "-1", title: "" });
-      const addAnswer = (answer: any) => {
+
+    const [answerIndex, setAnswerIndex] = useState("-1");
+    const [answer, setAnswer] = useState({ id: "-1", title: "" });
+
+    // true/false
+    const [selectedAnswer, setSelectedAnswer] = useState("");
+
+    const addAnswer = (answer: any) => {
         const newAnswers = [ ...answers, { ...answer,
-          id: new Date().getTime().toString() }];
+            id: new Date().getTime().toString() }];
         setAnswers(newAnswers);
-      };
-      const deleteAnswer = (id: string) => {
+    };
+    const deleteAnswer = (id: string) => {
         const newAnswers = answers.filter((answer) => answer.id !== id);
         setAnswers(newAnswers);
-      };
-      const updateAnswer = (answer: any) => {
+    };
+    const updateAnswer = (answer: any) => {
         const newAnswers = answers.map((item) =>
-          (item.id === answer.id ? answer : item));
+            (item.id === answer.id ? answer : item));
         setAnswers(newAnswers);
-      };
-    
-      const [fillinanswers, setFillInAnswers] = useState([
+    };
+    const [fillinanswers, setFillInAnswers] = useState([
         { id: "5", title: "two"  },
         { id: "6", title: "2"  },
         { id: "7", title: "dos"  },
     ]);
-      const [fillinanswer, setFillInAnswer] = useState({ id: "-1", title: "" });
-      const addFillInAnswer = (fillinanswer: any) => {
+    const [fillinanswer, setFillInAnswer] = useState({ id: "-1", title: "" });
+    const addFillInAnswer = (fillinanswer: any) => {
         const newFillInAnswers = [ ...fillinanswers, { ...fillinanswer,
           id: new Date().getTime().toString() }];
           setFillInAnswers(newFillInAnswers);
       };
-      const deleteFillInAnswer = (id: string) => {
+    const deleteFillInAnswer = (id: string) => {
         const newFillInAnswers = fillinanswers.filter((fillinanswer) => fillinanswer.id !== id);
         setFillInAnswers(newFillInAnswers);
-      };
-      const updateFillInAnswer = (fillinanswer: any) => {
+    };
+    const updateFillInAnswer = (fillinanswer: any) => {
         const newFillInAnswers = fillinanswers.map((item) =>
           (item.id === fillinanswer.id ? fillinanswer : item));
         setFillInAnswers(newFillInAnswers);
-      };
+    };
 
-    const [selectedOption, setSelectedOption] = useState("multipleChoice");
-    // const [questions, setQuestions] = useState("How much is 2+2?");
-    // const [points, setPoints] = useState(4);
+    const [questionType, SetQuestionType] = useState("multipleChoice");
+    const [question, setQuestion] = useState({
+        _id: "",
+        title: "",
+        question: "",
+        points: "",    
+        type: "",
+        choices: [{id: "", title: ""}],
+        answer: "",
+        answers: [{id: "", title: ""}],
+    });
+    const resetQuestion = {
+        _id: "",
+        title: "",
+        question: "",
+        points: "",    
+        type: "",
+        choices: [{id: "", title: ""}],
+        answer: "",
+        answers: [{id: "", title: ""}],
+    };
+    const [correctAnswer, setCorrectAnswer]  = useState("");
+    const [correctAnswers, setCorrectAnswers] = useState([{id: "", title: ""}]); 
 
 
+    // note to self: useEffect has to be used to avoid error: 
+    //  Too many re-renders. React limits the number of renders to prevent an infinite loop.
+    const loadCurrentQuestion = () => {
+        if (curQuestionIndex > -1) {
+            setQuestion({ ...questions[curQuestionIndex] });
+            console.log("Current question: ", questions[curQuestionIndex]);
+        } else {
+            setQuestion(resetQuestion);
+            console.log("reseted Current question: ", question);
+        }
+    };
+
+    useEffect(() => {
+        loadCurrentQuestion();
+    }, [curQuestionIndex]);
+    
+
+    const handleUpdateQuestion = () => {
+        let updatedQuestion = { ...question };
+        console.log("Update question", updatedQuestion);
+        console.log(question);
+        console.log("Correct answer: ", correctAnswer);
+        console.log("Correct answers: ", correctAnswers);
+
+        if (questionType === "multipleChoice") {
+            setCorrectAnswer(answer.id);
+        } else if (questionType === "trueFalse") {
+            setCorrectAnswer(answer.title);
+        } else {
+            setCorrectAnswers(fillinanswers)
+
+        }
+
+        console.log("Correct answer: ", correctAnswer);
+        console.log("Correct answers: ", correctAnswers);
+        console.log("Question type: ", questionType);
+        if (questionType === "fillInTheBlank") {
+            updatedQuestion = {
+                ...updatedQuestion,
+                type: questionType,
+                answers: fillinanswers,
+            };
+        };
+        if (questionType === "multipleChoice") {
+            console.log("multiple answers: ", answers);
+            updatedQuestion = {
+                ...updatedQuestion,
+                type: questionType,
+                choices: answers,
+                answer: answerIndex,
+            };
+        };
+        if (questionType === "trueFalse") {
+            console.log("Selected answer: ", selectedAnswer);
+            updatedQuestion = {
+                ...updatedQuestion,
+                type: questionType,
+                answer: selectedAnswer,
+            };
+        };
+        
+        console.log("Updated question: ", updatedQuestion);
+        console.log("Current question index: ", curQuestionIndex);
+        if (curQuestionIndex === -1) {
+            questions.push(updatedQuestion);
+        } else if (curQuestionIndex > -1) {
+            questions[curQuestionIndex] = updatedQuestion;
+        }
+        setQuestions([...questions]);
+        console.log(questions);
+        setQuestion(resetQuestion);
+        console.log("Question reset");
+        console.log(question);
+        SetQuestionType("multipleChoice");
+    };
     return (
         <Modal show={show} onHide={handleClose} size="lg" className="modal-dialog-scrollable"
         style={{ maxHeight: "90vh" }}>
@@ -73,13 +174,16 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose,}: {
                 <Modal.Header>
                     <Row className="align-items-center">
                         <Col md={4}>
-                            <FormControl type="text" placeholder="Easy Question" />
+                            {/* questionName */}
+                            <FormControl type="text" value= {question.title}
+                            onChange={(e) => {setQuestion({ ...question, title: e.target.value }); console.log(question);}}
+                            />
                         </Col>
                         <Col md={5}>
                             <FormSelect 
                                 className="w-100" 
-                                value={selectedOption} 
-                                onChange={(e) => {setSelectedOption(e.target.value); console.log(e.target.value);}}
+                                value={questionType} 
+                                onChange={(e) => {SetQuestionType(e.target.value); setQuestion({ ...question, type: e.target.value }); console.log(question);}}
                             >
                                 <option value="multipleChoice">Multiple Choice</option>
                                 <option value="trueFalse">True/False</option>
@@ -88,18 +192,20 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose,}: {
                         </Col>
                         <Col md={3} className="text-end">
                             <div className="d-inline-flex align-items-center">
+                            {/* qustionPoints */}
                             <FormLabel className="me-2 mb-0">pts:</FormLabel>
                             <FormControl
                                 type="number"
-                                placeholder="4"
+                                value={question.points}
                                 style={{ width: "60px" }}
+                                onChange={(e) => {setQuestion({ ...question, points: e.target.value }); console.log(question);}}
                             />
                             </div>
                         </Col>
                     </Row>
                 </Modal.Header>
                 <Modal.Body>
-                    {selectedOption === "multipleChoice" && (
+                    {questionType === "multipleChoice" && (
                         <>
                         {/* MultipleChoice */}
                         <FormLabel className="fs-6 fw-light text-muted">
@@ -109,7 +215,7 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose,}: {
                         <br />
                     </>)}
 
-                    {selectedOption === "trueFalse" && (
+                    {questionType === "trueFalse" && (
                         <>
                         {/* True/False */}
                         <FormLabel className="fs-6 fw-light text-muted">
@@ -119,7 +225,7 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose,}: {
                         <br />
                     </>)}
                     
-                    {selectedOption === "fillInTheBlank" && (
+                    {questionType === "fillInTheBlank" && (
                         <>
                         {/* Fill in the blank */}
                         <FormLabel className="fs-6 fw-light text-muted">
@@ -174,10 +280,13 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose,}: {
                         
                     </div>
                     <br/>
-                    <FormControl as="textarea" defaultValue="How much is 2+2?" style={{height: "100px"}}/>
+                    {/* questionText */}
+                    <FormControl as="textarea" value={question.question} style={{height: "100px"}}
+                    onChange={(e) => {setQuestion({ ...question, question: e.target.value }); console.log(question);}}
+                    />
 
 
-                    {selectedOption === "multipleChoice" && (
+                    {questionType === "multipleChoice" && (
                         <>
                         {/* MultipleChoice */}
                         <div id="wd-css-responsive-forms-1">
@@ -188,6 +297,7 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose,}: {
                                         >
                                 {answers.map((answer) => (
                                     <AnswerReduxItem
+                                        setIndex = {setAnswerIndex}
                                         answer={answer}
                                         deleteAnswer={deleteAnswer}
                                         setAnswer={setAnswer} />
@@ -202,19 +312,21 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose,}: {
                         </div>
                     </>)}
 
-                    {selectedOption === "trueFalse" && (
+                    {questionType === "trueFalse" && (
                         <>
                         {/* True/False */}  
                         <div id="wd-css-responsive-forms-1">
                             <FormLabel className="me-2 mb-0 fw-bold fs-5">
                                 Answers:
                             </FormLabel>
-                            <FormCheck className="align-items-center mb-3" type="radio" label="True" checked name="formHorizontalRadios"/>
-                            <FormCheck className="align-items-center mb-3" type="radio" label="False" checked name="formHorizontalRadios"/>
+                            <FormCheck className="align-items-center mb-3" type="radio" value="true" label="True" name="formHorizontalRadios" checked={selectedAnswer === "true"}
+                                onChange={(e) => setSelectedAnswer(e.target.value)}/>
+                            <FormCheck className="align-items-center mb-3" type="radio" value="false" label="False" name="formHorizontalRadios" checked={selectedAnswer === "false"}
+                                onChange={(e) => setSelectedAnswer(e.target.value)}/>
                         </div>
                     </>)}
 
-                    {selectedOption === "fillInTheBlank" && (
+                    {questionType === "fillInTheBlank" && (
                         <>
                         {/* Fill in the blank */}  
                         <div id="wd-css-responsive-forms-1">
@@ -243,7 +355,7 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose,}: {
                     <Button variant="secondary" onClick={handleClose}> Cancel </Button>
                     <Button variant="danger"
                     onClick={() => {
-                    
+                    handleUpdateQuestion();
                     handleClose();
                     }} > Update Question </Button>
                 </Modal.Footer>
