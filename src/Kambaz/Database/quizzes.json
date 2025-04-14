@@ -4,7 +4,7 @@
     "title": "Quiz1 - HTML",
     "isPublished" : true,
     "type": "Graded Quiz", 
-    "points": 100, 
+    "points": 100,
     "group": "Quizzes", 
     "shuffle": true,
     "timeLimit": 20, 

@@ -42,6 +42,20 @@ export default function QuizEditor() {
         if (quiz) setFormData({ ...quiz })
     }, [quiz]);
 
+    useEffect(() => {
+        if (!quiz?.questions) return;
+
+        const totalPoints = quiz.questions.reduce(
+            (sum, q) => sum + (parseInt(q.points) || 0),
+            0
+        );
+
+        if (quiz.points !== totalPoints) {
+            dispatch(updateQuiz({ ...quiz, points: totalPoints }));
+        }
+    }, [quiz?.questions, dispatch]);
+
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData((prev) => ({
@@ -98,9 +112,10 @@ export default function QuizEditor() {
                     <Form.Control
                         type="number"
                         value={quiz?.points || 0}
-                        onChange={(e) =>
-                            dispatch(updateQuiz({ ...quiz, points: parseInt(e.target.value) || 0 }))
-                        }
+                        // onChange={(e) =>
+                        //     dispatch(updateQuiz({ ...quiz, points: parseInt(e.target.value) || 0 }))
+                        // }
+                        disabled
                     />
                 </Form.Group>
 
