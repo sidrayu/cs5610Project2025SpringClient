@@ -1,29 +1,32 @@
 import { Button, FormControl } from "react-bootstrap";
 
-export default function FillInAnswerForm({ fillinanswer, setFillInAnswer, addFillInAnswer, updateFillInAnswer }: {
-    fillinanswer: { id: string; title: string };
-    setFillInAnswer: (FillInanswer: { id: string; title: string }) => void;
-    addFillInAnswer: (FillInanswer: { id: string; title: string }) => void;
-    updateFillInAnswer: (FillInanswer: { id: string; title: string }) => void;
+
+export default function FillInAnswerForm({ index, fillinanswer, setFillInAnswer, addFillInAnswer, updateFillInAnswer }: {
+    fillinanswer: string;
+    setFillInAnswer: (FillInanswer: string ) => void;
+    addFillInAnswer: (FillInanswer: string) => void;
+    updateFillInAnswer: (index: number, FillInanswer: string ) => void;
+    index: number;
   }) {
+
     return (
         <div className="d-flex align-items-center">
            
             <FormControl
-            value={fillinanswer.title}
-            onChange={(e) => setFillInAnswer({ ...fillinanswer, title: e.target.value })}
+            value={fillinanswer}
+            onChange={(e) => setFillInAnswer(e.target.value )}
             className="me-2"
             />
             <Button
                 variant="danger"
-                onClick={() => addFillInAnswer(fillinanswer)}
+                onClick={() => {addFillInAnswer(fillinanswer);}}
                 id="wd-add-todo-click"
             >
                 Add
             </Button>
             <Button
                 variant="primary"
-                onClick={() => updateFillInAnswer(fillinanswer)}
+                onClick={() => {updateFillInAnswer(index, fillinanswer);}}
                 id="wd-update-todo-click"
             >
                 Update
