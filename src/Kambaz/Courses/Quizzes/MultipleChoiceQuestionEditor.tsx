@@ -39,7 +39,7 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
     };
     const updateAnswer = (answer: any) => {
         const newAnswers = answers.map((item) =>
-            (item.id === answer._id ? answer : item));
+            (item._id === answer._id ? answer : item));
         setAnswers(newAnswers);
     };
     const [fillinanswers, setFillInAnswers] = useState<string[]>([]);
