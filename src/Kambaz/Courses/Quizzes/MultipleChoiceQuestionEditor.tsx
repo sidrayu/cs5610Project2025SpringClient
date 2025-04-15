@@ -11,6 +11,7 @@ import FillInAnswerForm from "./FillInAnswerRedux/FillInAnswerForm";
 import FillInAnswerItem from "./FillInAnswerRedux/FillInAnswerItem";
 import { useState } from "react";
 import { useEffect } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function MultipleChoiceQuestionEditor({ show, handleClose, questions, setQuestions,
     curQuestionIndex
@@ -19,64 +20,60 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
     setQuestions: (questions: any[]) => void;
     curQuestionIndex: number;
     } ) {
-    const [answers, setAnswers] = useState([
-        { id: "1", title: "4"  },
-        { id: "2", title: "5"  },
-        { id: "3", title: "6"  },
-        { id: "4", title: "7"  },
-    ]);
+    const [answers, setAnswers] = useState<{ _id: string; title: string }[]>([]);
 
     const [answerIndex, setAnswerIndex] = useState("-1");
-    const [answer, setAnswer] = useState({ id: "-1", title: "" });
+    const [answer, setAnswer] = useState({ _id: "-1", title: "" });
 
     // true/false
     const [selectedAnswer, setSelectedAnswer] = useState("");
 
     const addAnswer = (answer: any) => {
         const newAnswers = [ ...answers, { ...answer,
-            id: new Date().getTime().toString() }];
+            _id:  uuidv4()}];
         setAnswers(newAnswers);
     };
     const deleteAnswer = (id: string) => {
-        const newAnswers = answers.filter((answer) => answer.id !== id);
+        const newAnswers = answers.filter((answer) => answer._id !== id);
         setAnswers(newAnswers);
     };
     const updateAnswer = (answer: any) => {
         const newAnswers = answers.map((item) =>
-            (item.id === answer.id ? answer : item));
+            (item.id === answer._id ? answer : item));
         setAnswers(newAnswers);
     };
-    const [fillinanswers, setFillInAnswers] = useState([
-        { id: "5", title: "two"  },
-        { id: "6", title: "2"  },
-        { id: "7", title: "dos"  },
-    ]);
-    const [fillinanswer, setFillInAnswer] = useState({ id: "-1", title: "" });
-    const addFillInAnswer = (fillinanswer: any) => {
-        const newFillInAnswers = [ ...fillinanswers, { ...fillinanswer,
-          id: new Date().getTime().toString() }];
-          setFillInAnswers(newFillInAnswers);
+    const [fillinanswers, setFillInAnswers] = useState<string[]>([]);
+    const [fillinanswer, setFillInAnswer] = useState("");
+    const addFillInAnswer = (fillinanswer: string) => {
+        const newFillInAnswers = [ ...fillinanswers, fillinanswer];
+        setFillInAnswers(newFillInAnswers);
+        // setFillInAnswer("");
       };
-    const deleteFillInAnswer = (id: string) => {
-        const newFillInAnswers = fillinanswers.filter((fillinanswer) => fillinanswer.id !== id);
+    const deleteFillInAnswer = (index: number) => {
+        const newFillInAnswers = fillinanswers.filter((_, i) => i !== index);
         setFillInAnswers(newFillInAnswers);
     };
-    const updateFillInAnswer = (fillinanswer: any) => {
-        const newFillInAnswers = fillinanswers.map((item) =>
-          (item.id === fillinanswer.id ? fillinanswer : item));
+    const updateFillInAnswer = (index: number, fillinanswer: string) => {
+        // const newFillInAnswers = fillinanswers.map((item) =>
+        //   (item.id === fillinanswer.id ? fillinanswer : item));
+        // setFillInAnswers(newFillInAnswers);
+        const newFillInAnswers = [...fillinanswers];
+        newFillInAnswers[index] = fillinanswer;
         setFillInAnswers(newFillInAnswers);
+        console.log("Updated fill in answer: ", newFillInAnswers);
+        // setFillInAnswer("");
     };
 
-    const [questionType, SetQuestionType] = useState("multipleChoice");
+    const [questionType, SetQuestionType] = useState("");
     const [question, setQuestion] = useState({
         _id: "",
         title: "",
         question: "",
         points: "",    
         type: "",
-        choices: [{id: "", title: ""}],
+        choices: [{_id: "", title: ""}],
         answer: "",
-        answers: [{id: "", title: ""}],
+        answers: [""],
     });
     const resetQuestion = {
         _id: "",
@@ -84,23 +81,57 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
         question: "",
         points: "",    
         type: "",
-        choices: [{id: "", title: ""}],
+        choices: [{_id: "", title: ""}],
         answer: "",
-        answers: [{id: "", title: ""}],
+        answers: [""],
     };
     const [correctAnswer, setCorrectAnswer]  = useState("");
-    const [correctAnswers, setCorrectAnswers] = useState([{id: "", title: ""}]); 
+    // const [correctAnswers, setCorrectAnswers] = useState([{id: "", title: ""}]); 
 
 
     // note to self: useEffect has to be used to avoid error: 
     //  Too many re-renders. React limits the number of renders to prevent an infinite loop.
-    const loadCurrentQuestion = () => {
+    const loadCurrentQuestion = async () => {
         if (curQuestionIndex > -1) {
-            setQuestion({ ...questions[curQuestionIndex] });
-            console.log("Current question: ", questions[curQuestionIndex]);
+            const currentQuestion = { ...questions[curQuestionIndex] };
+            await new Promise((resolve) => {
+                setQuestion(currentQuestion);
+                resolve(null);
+            });
+            await new Promise((resolve) => {
+                SetQuestionType(currentQuestion.type);
+                resolve(null);
+            });
+            console.log("Current question: ", currentQuestion);
+            console.log("Current question type: ", currentQuestion.type);
+
+            if (currentQuestion.type === "multipleChoice") {
+                await new Promise((resolve) => {
+                    setAnswers(currentQuestion.choices);
+                    resolve(null);
+                });
+                await new Promise((resolve) => {
+                    setAnswerIndex(currentQuestion.answer);
+                    resolve(null);
+                });
+            } else if (currentQuestion.type === "fillInTheBlank") {
+                await new Promise((resolve) => {
+                    setFillInAnswers(currentQuestion.answers);
+                    resolve(null);
+                });
+            }
+
+            console.log("Current question type: ", currentQuestion.type);
+            console.log("Current answers: ", currentQuestion.choices);
+            console.log("Current answer: ", answer);
+            console.log("Current answerindex: ", answerIndex);
+            console.log("Current fillinanswers: ", fillinanswers);
         } else {
-            setQuestion(resetQuestion);
-            console.log("reseted Current question: ", question);
+            await new Promise((resolve) => {
+                setQuestion(resetQuestion);
+                resolve(null);
+            });
+            console.log("Reset Current question: ", resetQuestion);
         }
     };
 
@@ -109,24 +140,20 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
     }, [curQuestionIndex]);
     
 
-    const handleUpdateQuestion = () => {
+    const handleUpdateQuestion = async () => {
         let updatedQuestion = { ...question };
         console.log("Update question", updatedQuestion);
         console.log(question);
         console.log("Correct answer: ", correctAnswer);
-        console.log("Correct answers: ", correctAnswers);
+        console.log("fillin answers: ", fillinanswers);
 
         if (questionType === "multipleChoice") {
-            setCorrectAnswer(answer.id);
+            setCorrectAnswer(answer._id);
         } else if (questionType === "trueFalse") {
             setCorrectAnswer(answer.title);
-        } else {
-            setCorrectAnswers(fillinanswers)
-
         }
 
         console.log("Correct answer: ", correctAnswer);
-        console.log("Correct answers: ", correctAnswers);
         console.log("Question type: ", questionType);
         if (questionType === "fillInTheBlank") {
             updatedQuestion = {
@@ -160,12 +187,91 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
         } else if (curQuestionIndex > -1) {
             questions[curQuestionIndex] = updatedQuestion;
         }
-        setQuestions([...questions]);
-        console.log(questions);
-        setQuestion(resetQuestion);
+        console.log("Updated questions: ", questions);
+        await new Promise((resolve) => {
+            setQuestions([...questions]);
+            resolve(null);
+        });
+        
+        await new Promise((resolve) => {
+            setQuestion(resetQuestion);
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setAnswers([]);
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setFillInAnswers([]);
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setAnswer({ _id: "-1", title: "" });
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setFillInAnswer("");
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setAnswerIndex("-1");
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setSelectedAnswer("");
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setCorrectAnswer("");
+            resolve(null);
+        });
         console.log("Question reset");
         console.log(question);
-        SetQuestionType("multipleChoice");
+        await new Promise((resolve) => {
+            SetQuestionType("multipleChoice");
+            resolve(null);
+        });
+    };
+
+    const handleReset = async () => {
+        await new Promise((resolve) => {
+            setQuestion(resetQuestion);
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setAnswers([]);
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setFillInAnswers([]);
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setAnswer({ _id: "-1", title: "" });
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setFillInAnswer("");
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setAnswerIndex("-1");
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setSelectedAnswer("");
+            resolve(null);
+        });
+        await new Promise((resolve) => {
+            setCorrectAnswer("");
+            resolve(null);
+        });
+        console.log("Question reset");
+        console.log(question);
+        await new Promise((resolve) => {
+            SetQuestionType("multipleChoice");
+            resolve(null);
+        });
     };
     return (
         <Modal show={show} onHide={handleClose} size="lg" className="modal-dialog-scrollable"
@@ -319,10 +425,10 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
                             <FormLabel className="me-2 mb-0 fw-bold fs-5">
                                 Answers:
                             </FormLabel>
-                            <FormCheck className="align-items-center mb-3" type="radio" value="true" label="True" name="formHorizontalRadios" checked={selectedAnswer === "true"}
-                                onChange={(e) => setSelectedAnswer(e.target.value)}/>
+                            <FormCheck className="align-items-center mb-3" type="radio" value="true" label="True" name="formHorizontalRadios" checked={selectedAnswer === "true" }
+                                onChange={() => setSelectedAnswer("true")}/>
                             <FormCheck className="align-items-center mb-3" type="radio" value="false" label="False" name="formHorizontalRadios" checked={selectedAnswer === "false"}
-                                onChange={(e) => setSelectedAnswer(e.target.value)}/>
+                                onChange={() => setSelectedAnswer("false")}/>
                         </div>
                     </>)}
 
@@ -338,12 +444,14 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
                                 {fillinanswers.map((fillinanswer) => (
                                     <FillInAnswerItem
                                         fillinanswer={fillinanswer}
+                                        index = {fillinanswers.indexOf(fillinanswer)}
                                         deleteFillInAnswer={deleteFillInAnswer}
                                         setFillInAnswer={setFillInAnswer} />
                                 ))}
                             
                             </ListGroup>
                                 <FillInAnswerForm
+                                    index = {fillinanswers.indexOf(fillinanswer)}
                                     fillinanswer={fillinanswer}
                                     setFillInAnswer={setFillInAnswer}
                                     addFillInAnswer={addFillInAnswer}
@@ -352,7 +460,10 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
                     </>)}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}> Cancel </Button>
+                    <Button variant="secondary" onClick={() => {
+                    handleReset();
+                    handleClose();
+                    }}> Cancel </Button>
                     <Button variant="danger"
                     onClick={() => {
                     handleUpdateQuestion();

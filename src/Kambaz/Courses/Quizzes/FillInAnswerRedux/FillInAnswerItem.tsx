@@ -2,23 +2,24 @@ import { Button, FormControl, ListGroup, FormLabel} from "react-bootstrap";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { TiPencil } from "react-icons/ti";
 
-export default function FillInAnswerItem({ fillinanswer, deleteFillInAnswer, setFillInAnswer }: {
-    fillinanswer: { id: string; title: string };
-    deleteFillInAnswer: (id: string) => void;
-    setFillInAnswer: (fillInanswer: { id: string; title: string }) => void;
+export default function FillInAnswerItem({ fillinanswer, deleteFillInAnswer, setFillInAnswer, index }: {
+    fillinanswer: string;
+    deleteFillInAnswer: (index: number) => void;
+    setFillInAnswer: (fillInanswer: string ) => void;
+    index: number;
   }) {
     return (
         <ListGroup.Item
-        key={fillinanswer.id}
+        key={index}
         className="d-flex justify-content-between align-items-center border-0 rounded-0 mb-2"
         >
                 <FormLabel className="mb-0 me-3">
                     Possible Answer:
                 </FormLabel>
                 <FormControl
-                value={fillinanswer.title}
+                value={fillinanswer}
                 onChange={(e) =>
-                setFillInAnswer({ ...fillinanswer, title: e.target.value })
+                setFillInAnswer(e.target.value )
                 }
                 className="me-3"
                 style={{ flex: 1 }}
@@ -35,7 +36,7 @@ export default function FillInAnswerItem({ fillinanswer, deleteFillInAnswer, set
                 <Button
                 variant="link"
                 className="p-0 text-danger"
-                onClick={() => deleteFillInAnswer(fillinanswer.id)}
+                onClick={() => deleteFillInAnswer(index)}
                 id="wd-delete-todo-click"
                 >
                 <FaRegTrashCan size={18} />

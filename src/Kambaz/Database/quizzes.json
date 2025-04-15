@@ -1,127 +1,271 @@
-[ {
-    "_id": "quiz123",
-    "course": "RS101",
-    "title": "Quiz1 - HTML",
-    "isPublished" : true,
-    "type": "Graded Quiz", 
-    "points": 100, 
-    "group": "Quizzes", 
-    "shuffle": true,
-    "timeLimit": 20, 
-    "multipleAttempts": false,
-    "numberAttempts": 1,
-    "showAnswersImmediately": false,
-    "showAnswersAfter": "2025-04-15T23:59:00Z",
-    "accessCode": "", 
-    "oneQuestionAtATime": true,
-    "webcam": false,
-    "lock": false,
-    "dueDate": "2025-04-10T23:59:00Z",
-    "availableDate": "2025-04-05T08:00:00Z",
-    "untilDate": "2025-04-15T23:59:00Z",
-    "questions": [
-      {
-        "_id": "q26",
-        "title": "New Question",
-        "type": "multipleChoice", 
-        "points": 20,
-        "question": "What is the capital of France?",
-        "choices": [
-          "Berlin",
-          "Madrid",
-          "Paris",
-          "Rome"
-        ],
-        "answer": 2 
-      },
-      {
-        "_id": "q27",
-        "title": "True or False Example",
-        "type": "trueFalse",
-        "points": 10,
-        "question": "The Earth is flat.",
-        "choices": [
-          "True",
-          "False"
-        ],
-        "answer": 1
-      },
-      {
-        "_id": "q28",
-        "title": "Fill in the blank",
-        "type": "fillInTheBlank",
-        "points": 15,
-        "question": "The chemical symbol for water is ___",
-        "answers": [
-          "H2O",
-          "H2o",
-          "h2o"
-        ]
-      }
-    ]
-  },
-  {
-    "_id": "quiz456",
-    "course": "RS101",
-    "title": "Quiz2 - CSS",
-    "isPublished": false,
-    "type": "Graded Quiz",
-    "points": 75,
-    "group": "Quizzes",
-    "shuffle": true,
-    "timeLimit": 15,
-    "multipleAttempts": true,
-    "numberAttempts": 3,
-    "showAnswersImmediately": true,
-    "showAnswersAfter": "",
-    "accessCode": "",
-    "oneQuestionAtATime": true,
-    "webcam": false,
-    "lock": false,
-    "dueDate": "2025-05-15T23:59:00Z",
-    "availableDate": "2025-05-01T08:00:00Z",
-    "untilDate": "2025-05-20T23:59:00Z",
-    "questions": [
-      {
-        "_id": "q29",
-        "title": "CSS Selectors",
-        "type": "multipleChoice",
-        "points": 25,
-        "question": "Which CSS selector has the highest specificity?",
-        "choices": [
-          "Class selector (.class)",
-          "ID selector (#id)",
-          "Element selector (p)",
-          "Universal selector (*)"
-        ],
-        "answer": 1
-      },
-      {
-        "_id": "q30",
-        "title": "CSS Box Model",
-        "type": "trueFalse",
-        "points": 20,
-        "question": "The CSS box model consists of content, padding, border, and margin.",
-        "choices": [
-          "True",
-          "False"
-        ],
-        "answer": 0
-      },
-      {
-        "_id": "q31",
-        "title": "CSS Properties",
-        "type": "fillInTheBlank",
-        "points": 30,
-        "question": "The CSS property used to change the text color is ___",
-        "answer": "color",
-        "answers": [
-          "color",
-          "Color",
-          "COLOR"
-        ]
-      }
-    ]
-  }
-]
-  
+[{
+  "_id": "quiz123",
+  "course": "RS101",
+  "title": "Quiz1 - HTML",
+  "isPublished": true,
+  "type": "Graded Quiz",
+  "points": 97,
+  "group": "Quizzes",
+  "shuffle": true,
+  "timeLimit": 20,
+  "multipleAttempts": false,
+  "numberAttempts": 1,
+  "showAnswersImmediately": false,
+  "showAnswersAfter": "2025-04-15T23:59:00Z",
+  "accessCode": "",
+  "oneQuestionAtATime": true,
+  "webcam": false,
+  "lock": false,
+  "dueDate": "2025-04-10T23:59:00Z",
+  "availableDate": "2025-04-05T08:00:00Z",
+  "untilDate": "2025-04-15T23:59:00Z",
+  "questions": [
+    {
+      "_id": "q26",
+      "title": "New Question",
+      "type": "multipleChoice",
+      "points": 20,
+      "question": "What is the capital of France?",
+      "choices": [
+        {
+          "_id": "67fdb7be58017f573ce87f4e",
+          "title": "Berlin"
+        },
+        {
+          "_id": "67fdb7be58017f573ce87f4f",
+          "title": "Madrid"
+        },
+        {
+          "_id": "67fdb7be58017f573ce87f50",
+          "title": "Paris"
+        },
+        {
+          "_id": "67fdb7be58017f573ce87f51",
+          "title": "Rome"
+        }
+      ],
+      "answer": "67fdb7be58017f573ce87f4f",
+      "answers": []
+    },
+    {
+      "_id": "q27",
+      "title": "q2 True or False Example",
+      "type": "trueFalse",
+      "points": 8,
+      "question": "The Earth is flat.1",
+      "choices": [],
+      "answer": "false",
+      "answers": []
+    },
+    {
+      "_id": "q28",
+      "title": "Fill in the blank",
+      "type": "fillInTheBlank",
+      "points": 15,
+      "question": "The chemical symbol for water is ___",
+      "choices": [],
+      "answers": [
+        "H2O",
+        "H2o",
+        "h2o"
+      ]
+    },
+    {
+      "_id": "",
+      "title": "q4",
+      "type": "fillInTheBlank",
+      "points": 2,
+      "question": "dfdf",
+      "choices": [
+        {
+          "_id": "67fdb7be58017f573ce87f52",
+          "title": ""
+        }
+      ],
+      "answer": null,
+      "answers": [
+        "a",
+        "ab"
+      ]
+    },
+    {
+      "_id": "",
+      "title": "q5",
+      "type": "multipleChoice",
+      "points": 20,
+      "question": "dfdfdfdfd",
+      "choices": [
+        {
+          "_id": "67fdbfed58017f573ce87f89",
+          "title": "a"
+        },
+        {
+          "_id": "67fdbfed58017f573ce87f8a",
+          "title": "b"
+        },
+        {
+          "_id": "67fdbfed58017f573ce87f8b",
+          "title": "c"
+        },
+        {
+          "_id": "67fdc51558017f573ce88064",
+          "title": "e"
+        }
+      ],
+      "answer": "67fdbfed58017f573ce87f8b",
+      "answers": [
+        ""
+      ]
+    },
+    {
+      "_id": "",
+      "title": "q6",
+      "type": "trueFalse",
+      "points": 1,
+      "question": "dfdf",
+      "choices": [
+        {
+          "_id": "",
+          "title": ""
+        }
+      ],
+      "answer": "false",
+      "answers": [
+        ""
+      ]
+    },
+    {
+      "_id": "",
+      "title": "q7",
+      "type": "multipleChoice",
+      "points": 10,
+      "question": "dfdf",
+      "choices": [
+        {
+          "_id": "5d4e146e-d07c-45cc-b6da-0ebc17b2ac14",
+          "title": "a"
+        },
+        {
+          "_id": "e5ea81e0-b748-4beb-b2ee-0faf0e2d7b57",
+          "title": "b"
+        },
+        {
+          "_id": "9a75f5a8-b7a8-48f7-ab00-44e1b63dbf70",
+          "title": "c"
+        }
+      ],
+      "answer": "e5ea81e0-b748-4beb-b2ee-0faf0e2d7b57",
+      "answers": [
+        ""
+      ]
+    },
+    {
+      "_id": "",
+      "title": "q8",
+      "type": "trueFalse",
+      "points": 20,
+      "question": "dfdf",
+      "choices": [
+        {
+          "_id": "",
+          "title": ""
+        }
+      ],
+      "answer": "false",
+      "answers": [
+        ""
+      ]
+    },
+    {
+      "_id": "",
+      "title": "q9",
+      "type": "fillInTheBlank",
+      "points": 1,
+      "question": "dfdf",
+      "choices": [
+        {
+          "_id": "",
+          "title": ""
+        }
+      ],
+      "answer": "",
+      "answers": [
+        "a",
+        "b",
+        "c"
+      ]
+    }
+  ],
+  "untildate": ""
+},
+{
+  "_id": "quiz456",
+  "course": "RS101",
+  "title": "Quiz2 - CSS",
+  "isPublished": false,
+  "type": "Graded Quiz",
+  "points": 75,
+  "group": "Quizzes",
+  "shuffle": true,
+  "timeLimit": 15,
+  "multipleAttempts": true,
+  "numberAttempts": 3,
+  "showAnswersImmediately": true,
+  "showAnswersAfter": "",
+  "accessCode": "",
+  "oneQuestionAtATime": true,
+  "webcam": false,
+  "lock": false,
+  "dueDate": "2025-05-15T23:59:00Z",
+  "availableDate": "2025-05-01T08:00:00Z",
+  "untilDate": "2025-05-20T23:59:00Z",
+  "questions": [
+    {
+      "_id": "q29",
+      "title": "CSS Selectors",
+      "type": "multipleChoice",
+      "points": 25,
+      "question": "Which CSS selector has the highest specificity?",
+      "choices": [
+        {
+          "_id": "1",
+          "title": "Class selector (.class)"
+        },
+        {
+          "_id": "2",
+          "title": "ID selector (#id)"
+        },
+        {
+          "_id": "3",
+          "title": "Element selector (p)"
+        },
+        {
+          "_id": "4",
+          "title": "Universal selector (*)"
+        }
+      ],
+      "answer": 1
+    },
+    {
+      "_id": "q30",
+      "title": "CSS Box Model",
+      "type": "trueFalse",
+      "points": 20,
+      "question": "The CSS box model consists of content, padding, border, and margin.",
+      "answer": 0
+    },
+    {
+      "_id": "q31",
+      "title": "CSS Properties",
+      "type": "fillInTheBlank",
+      "points": 30,
+      "question": "The CSS property used to change the text color is ___",
+      "answer": "color",
+      "answers": [
+        "color",
+        "Color",
+        "COLOR"
+      ]
+    }
+  ]
+}]

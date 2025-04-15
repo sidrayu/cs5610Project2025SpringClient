@@ -1,10 +1,10 @@
 import { Button, FormControl } from "react-bootstrap";
 
 export default function AnswerReduxForm({ answer, setAnswer, addAnswer, updateAnswer }: {
-    answer: { id: string; title: string };
-    setAnswer: (answer: { id: string; title: string }) => void;
-    addAnswer: (answer: { id: string; title: string }) => void;
-    updateAnswer: (answer: { id: string; title: string }) => void;
+    answer: { _id: string; title: string };
+    setAnswer: (answer: { _id: string; title: string }) => void;
+    addAnswer: (answer: { _id: string; title: string }) => void;
+    updateAnswer: (answer: { _id: string; title: string }) => void;
   }) {
     return (
         <div className="d-flex align-items-center">
