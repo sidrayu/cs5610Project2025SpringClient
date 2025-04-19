@@ -7,26 +7,60 @@ import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch } from "react-redux";
 import { addQuiz } from "./reducer";
+import { createQuiz } from "./client";
+
 export default function QuizzesControls() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
     const navigate = useNavigate();
     const { cid } = useParams();
     const dispatch = useDispatch();
 
-    const handleAddQuiz = () => {
-        const newId = uuidv4();
-        dispatch(addQuiz({
-            _id: newId,
-            course: cid,
-            title: "New Quiz",
-            description: "New Quiz Description",
-            points: 0,
-            startdate: "",
-            duedate: "",
-            untildate: "",
-            modules: ""
-        }));
-        navigate(`/Kambaz/Courses/${cid}/Quizzes/${newId}`);
+    const handleAddQuiz = async () => {
+        if (!cid) return;
+        
+        try {
+            const newId = uuidv4();
+            const newQuiz = {
+                _id: newId,
+                course: cid,
+                title: "New Quiz",
+                description: "New Quiz Description",
+                points: 0,
+                startdate: "",
+                duedate: "",
+                untildate: "",
+                modules: "",
+                isPublished: false,
+                type: "Graded Quiz",
+                group: "Quizzes",
+                shuffle: true,
+                timeLimit: 0,
+                multipleAttempts: false,
+                numberAttempts: 1,
+                showAnswersImmediately: true,
+                showAnswersAfter: "",
+                accessCode: "",
+                oneQuestionAtATime: true,
+                webcam: false,
+                lock: false,
+                dueDate: "",
+                availableDate: "",
+                untilDate: "",
+                assignTo: ["Everyone"],
+                questions: []
+            };
+            
+            // Create the quiz in the database
+            await createQuiz(cid, newQuiz);
+            
+            // Add the quiz to the Redux store
+            dispatch(addQuiz(newQuiz));
+            
+            // Navigate to the new quiz's detail page
+            navigate(`/Kambaz/Courses/${cid}/Quizzes/${newId}`);
+        } catch (error) {
+            console.error("Error creating new quiz:", error);
+        }
     };
  return (
   <div id="wd-assignment-controls" className="d-flex align-items-center justify-content-between mb-4">
