@@ -36,7 +36,7 @@ export default function QuizzesControls() {
                 shuffle: true,
                 timeLimit: 0,
                 multipleAttempts: false,
-                numberAttempts: 1,
+                numberAttempts : 1,
                 showAnswersImmediately: true,
                 showAnswersAfter: "",
                 accessCode: "",

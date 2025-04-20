@@ -25,7 +25,7 @@ export default function Account() {
 
               <br/><br/><br/>
 
-      <h3>Team Info</h3>
+      <h3>Team Info and Team Name:Group1-Quiz </h3>
       <div style={{ marginLeft: "1rem", lineHeight: "1.8" }}>
 
           <p><strong>CS5610 Group Project GitHub Links - Spring 2025</strong><br />
