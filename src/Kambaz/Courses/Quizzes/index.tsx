@@ -2,29 +2,72 @@ import { Link } from "react-router";
 import QuizzesControls from "./QuizzesControls";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteQuiz, togglePublish } from "./reducer";
+import { deleteQuiz, togglePublish, setQuizzes } from "./reducer";
 import { ListGroup } from "react-bootstrap";
 import { BsGripVertical } from 'react-icons/bs';
 import { IoRocketOutline } from "react-icons/io5";
 import "./quizstyle.css"
 import { Form } from 'react-bootstrap';
 import LessonControlButtons from "./LessonControlButtons";
-//import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { findQuizzesByCourseId, deleteQuiz as deleteQuizApi, toggleQuizPublish } from "./client";
 
 export default function Quizzes() {
     const { cid } = useParams();
     const { quizzes, quizScores } = useSelector((state: any) => state.quizzesReducer);
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(true);
     
     const isFaculty = currentUser?.role === "FACULTY";
     
-    const removeQuiz = (quizId: string) => {
-        dispatch(deleteQuiz(quizId));
+    // Fetch quizzes from the backend when the component mounts
+    useEffect(() => {
+        const fetchQuizzes = async () => {
+            if (!cid) return;
+            
+            try {
+                setLoading(true);
+                const fetchedQuizzes = await findQuizzesByCourseId(cid);
+                // Update the Redux store with the fetched quizzes
+                dispatch(setQuizzes({ quizzes: fetchedQuizzes }));
+                console.log("Fetched quizzes:", fetchedQuizzes);
+            } catch (error) {
+                console.error("Error fetching quizzes:", error);
+                // If there's an error, we'll keep using the quizzes from the Redux store
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchQuizzes();
+    }, [cid, dispatch]);
+    
+    const removeQuiz = async (quizId: string) => {
+        if (!cid) return;
+        
+        try {
+            await deleteQuizApi(cid, quizId);
+            dispatch(deleteQuiz(quizId));
+        } catch (error) {
+            console.error("Error deleting quiz:", error);
+        }
     };
 
-    const handlePublishToggle = (quizId: string) => {
-        dispatch(togglePublish(quizId));
+    const handlePublishToggle = async (quizId: string) => {
+        if (!cid) return;
+        
+        try {
+            // Find the current quiz to get its publish status
+            const quiz = quizzes.find((q: any) => q._id === quizId);
+            if (!quiz) return;
+            
+            const newPublishStatus = !quiz.isPublished;
+            await toggleQuizPublish(cid, quizId, newPublishStatus);
+            dispatch(togglePublish(quizId));
+        } catch (error) {
+            console.error("Error toggling quiz publish status:", error);
+        }
     };
 
     const getAvailabilityStatus = (quiz: any) => {
@@ -42,6 +85,8 @@ export default function Quizzes() {
     };
 
     const formatDate = (dateString: string) => {
+        if (!dateString) return "Not set";
+        
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', { 
             month: 'short', 
@@ -77,6 +122,10 @@ export default function Quizzes() {
         }
         return null;
     };
+
+    if (loading) {
+        return <div>Loading quizzes...</div>;
+    }
 
     return (
         <div>

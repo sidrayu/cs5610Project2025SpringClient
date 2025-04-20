@@ -45,6 +45,7 @@ export default function QuestionEditor() {
             const quizData = await quizClient.findQuizById(cid!, qid);
             setQuiz(quizData);
             setQuestions(quizData.questions);
+            console.log("Fetched quiz data:", quizData);
         } catch (error) {
             console.error("Error fetching quiz data:", error);
         }

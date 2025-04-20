@@ -2,18 +2,54 @@ import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { FaPencilAlt } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { findQuizById } from "./client";
 
 export default function QuizDetails() {
     const { cid, qid } = useParams();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { quizzes } = useSelector((state: any) => state.quizzesReducer);
-    const quiz = quizzes.find((q: any) => q._id === qid);
+    const [quiz, setQuiz] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
     const isFaculty = currentUser?.role === "FACULTY";
+    
+    useEffect(() => {
+        const fetchQuizDetails = async () => {
+            if (!cid || !qid) return;
+            
+            try {
+                setLoading(true);
+                // First try to fetch from the database
+                const fetchedQuiz = await findQuizById(cid, qid);
+                setQuiz(fetchedQuiz);
+            } catch (error) {
+                console.error("Error fetching quiz details from database:", error);
+                
+                // If not found in database, try to find in Redux store
+                const quizFromStore = quizzes.find((q: any) => q._id === qid);
+                if (quizFromStore) {
+                    console.log("Found quiz in Redux store:", quizFromStore);
+                    setQuiz(quizFromStore);
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchQuizDetails();
+    }, [cid, qid, quizzes]);
+    
+    if (loading) {
+        return <div>Loading quiz details...</div>;
+    }
+    
     if (!quiz) {
         return <div>Quiz not found</div>;
     }
 
     const formatDate = (dateString: string) => {
+        if (!dateString) return "Not set";
+        
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', { 
             month: 'short', 

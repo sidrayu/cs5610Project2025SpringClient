@@ -11,11 +11,18 @@ export default function ShowQuestionsPage({ questions, setShow, setCurQuestionIn
     // const defaultSetQuestions = useCallback(() => {}, []);
     console.log(questions);
     
-    const handleShow = (index: any) => {
+    const handleShow = async (index: any) => {
         if (curQuestionIndex !== index) { 
-            setCurQuestionIndex(index);
+            await new Promise((resolve) => {
+                setCurQuestionIndex(index);
+                resolve(null);
+            });
         }
-        setShow(true);
+        await new Promise((resolve) => {
+            setShow(true);
+            resolve(null);
+        });
+        
     };
     
     return (

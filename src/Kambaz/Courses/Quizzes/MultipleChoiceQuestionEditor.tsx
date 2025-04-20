@@ -129,6 +129,7 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
         } else {
             await new Promise((resolve) => {
                 setQuestion(resetQuestion);
+                SetQuestionType("multipleChoice");
                 resolve(null);
             });
             console.log("Reset Current question: ", resetQuestion);
@@ -137,7 +138,7 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
 
     useEffect(() => {
         loadCurrentQuestion();
-    }, [curQuestionIndex]);
+    }, [curQuestionIndex, show]);
     
 
     const handleUpdateQuestion = async () => {

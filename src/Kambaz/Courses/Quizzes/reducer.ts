@@ -1,10 +1,39 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { quizzes, quizScores } from "../../Database"; 
 import { v4 as uuidv4 } from "uuid";
 
+// Define types for our quiz data
+interface QuizAttempt {
+  date: string;
+  score: number;
+}
+
+interface QuizUser {
+  userId: string;
+  attempts: QuizAttempt[];
+}
+
+interface QuizScore {
+  quiz: string;
+  users: QuizUser[];
+}
+
+interface Quiz {
+  _id: string;
+  title: string;
+  course: string;
+  points: number;
+  dueDate: string;
+  availableDate: string;
+  untilDate: string;
+  isPublished: boolean;
+  visibleTo?: string[];
+  questions?: any[];
+}
+
+// Initialize with empty arrays instead of importing from Database
 const initialState = {
-  quizzes: quizzes,
-  quizScores: quizScores,
+  quizzes: [] as Quiz[],
+  quizScores: { quizzes: [] as QuizScore[] },
 };
 
 const quizzesSlice = createSlice({
@@ -13,6 +42,9 @@ const quizzesSlice = createSlice({
   reducers: {
     setQuiz: (state, action) => {
       state.quizzes = action.payload;
+    },
+    setQuizzes: (state, action) => {
+      state.quizzes = action.payload.quizzes;
     },
     addQuiz: (state, { payload: quiz }) => {
       const newQuiz = {
@@ -43,6 +75,7 @@ const quizzesSlice = createSlice({
 
 export const {
   setQuiz,
+  setQuizzes,
   addQuiz,
   deleteQuiz,
   updateQuiz,
