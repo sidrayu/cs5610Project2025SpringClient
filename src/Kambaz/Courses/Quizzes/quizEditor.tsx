@@ -16,6 +16,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Card } from "react-bootstrap";
 import CreatableSelect from "react-select/creatable";
+import {updateQuizById} from "./client.ts";
 
 
 
@@ -26,7 +27,11 @@ export default function QuizEditor() {
     const dispatch = useDispatch();
 
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const quizzes = useSelector((state) => state.quizzesReducer.quizzes);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const quiz = quizzes.find((q) => q._id === qid);
     const assignee  = (quiz?.assignTo || []).map((a: string) => ({
         label: a,
@@ -39,13 +44,21 @@ export default function QuizEditor() {
     const [descriptionPreview, setDescriptionPreview] = useState(false);
 
     useEffect(() => {
-        if (quiz) setFormData({ ...quiz })
+        if (quiz) {
+
+            setFormData((prev) => ({
+                ...quiz,
+                questions: quiz.questions ?? prev.questions ?? []
+            }));
+        }
     }, [quiz]);
 
     useEffect(() => {
         if (!quiz?.questions) return;
 
         const totalPoints = quiz.questions.reduce(
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             (sum, q) => sum + (parseInt(q.points) || 0),
             0
         );
@@ -55,19 +68,46 @@ export default function QuizEditor() {
         }
     }, [quiz?.questions, dispatch]);
 
-
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         setFormData((prev) => ({
             ...prev,
             [name]: type === "checkbox" ? checked : value,
         }));
+
     };
 
-    const handleSave = () => {
-        dispatch(updateQuiz(formData));
-        navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`);
+    const handleSave = async (publish = false) => {
+        //
+        // dispatch(updateQuiz(formData));
+        // navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`);
+        if (!cid || !qid) {
+            console.error("Missing courseId or quizId");
+            alert("Missing course or quiz ID");
+            return;
+        }
+
+        try {
+            const merged = {
+                ...quiz,
+                ...formData,
+                isPublished: publish ? true : formData.isPublished || false,
+            };
+
+            const updatedQuiz = await updateQuizById(cid, qid, merged);
+            dispatch(updateQuiz(updatedQuiz));
+            navigate(`/Kambaz/Courses/${cid}/Quizzes/`);
+        } catch (error) {
+            console.error("Failed to update quiz:", error);
+            alert("Error saving quiz");
+        }
     };
+
+
 
     function handleCancle() {
         navigate(`/Kambaz/Courses/${cid}/Quizzes`);
@@ -75,6 +115,10 @@ export default function QuizEditor() {
 
 
     if (!quiz) return <div className="text-danger">Quiz not found</div>;
+
+
+    const handleSaveNotPublish = () => handleSave(false);
+    const handleSaveAndPublish = () => handleSave(true);
 
 
     return (
@@ -218,7 +262,7 @@ export default function QuizEditor() {
                         name="hasTimeLimit"
                         checked={!!formData.timeLimit}
                         onChange={() =>
-                            setFormData((prev: any) => ({
+                            setFormData((prev: { timeLimit: never; }) => ({
                                 ...prev,
                                 timeLimit: prev.timeLimit ? 0 : 20,
                             }))
@@ -243,7 +287,23 @@ export default function QuizEditor() {
                         checked={formData.multipleAttempts || false}
                         onChange={handleChange}
                     />
+
                 </Form.Group>
+
+                {formData.multipleAttempts && (
+                    <Form.Group className="mb-3">
+                        <Form.Label>Max Attempts</Form.Label>
+                        <Form.Control
+                            type="number"
+                            name="numberAttempts"
+                            min={1}
+                            value={formData.numberAttempts || ""}
+                            onChange={handleChange}
+                            placeholder="Enter number of allowed attempts"
+                        />
+                    </Form.Group>
+                )}
+
 
 
                 <h5>Assign</h5>
@@ -258,7 +318,7 @@ export default function QuizEditor() {
                             onChange={(selected) =>
                                 dispatch(updateQuiz({
                                     ...quiz,
-                                    assignTo: selected.map((opt: any) => opt.value),
+                                    assignTo: selected.map((opt) => opt.value),
                                 }))
                             }
                         />
@@ -381,8 +441,11 @@ export default function QuizEditor() {
                     <Button variant="secondary" onClick={handleCancle}>
                         Cancel
                     </Button>
-                    <Button variant="danger" onClick={handleSave}>
+                    <Button variant="danger" onClick={handleSaveNotPublish}>
                         Save
+                    </Button>
+                    <Button variant="success" onClick={handleSaveAndPublish}>
+                        Save & Publish
                     </Button>
                 </div>
             </Form>
