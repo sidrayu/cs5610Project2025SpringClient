@@ -50,31 +50,33 @@ const QuizPreviewPage: React.FC = () => {
     const dateStr = `${now.toLocaleDateString('en-US', options)} at ${timeString}`;
 
     const currentQuestion = quiz.questions[currentIndex];
-    console.log("Current Question: ", currentQuestion);
+    // console.log("Current Question: ", currentQuestion);
     // console.log("Current Index: ", currentIndex);
-    // console.log("Answers: ", answers);
+    console.log("Answers: ", answers);
     // console.log("Submitted: ", submitted);
     // console.log("Quiz: ", quiz);
 
     const handleAnswer = (value: string) => {
-        console.log("handleAnswer.value", value);
-        console.log("handleAnswer.currentQuestion", currentQuestion);
-        console.log("handleAnswer.Answers1: ", answers);
+        // console.log("handleAnswer.value", value);
+        // console.log("handleAnswer.currentQuestion", currentQuestion);
+        // console.log("handleAnswer.Answers1: ", answers);
         setAnswers({ ...answers, [currentQuestion._id]: value });
-        console.log("handleAnswer.Answers2: ", answers);
+        // console.log("handleAnswer.Answers2: ", answers);
     };
 
     const isIncorrect = (question: any) => {
         const answer: any = answers[question._id];
-        if (!answer)
+        if (!answer) {
+            console.log("Answer not provided");
             return false; // No answer provided
-        if (currentQuestion.type === 'trueFalse') {
-            return answer.toLowerCase() === currentQuestion.answer.toLowerCase();
-        } else if (currentQuestion.type === 'multipleChoice') {
-            return answer === currentQuestion.answer;
-        } else if (currentQuestion.type === 'fillInTheBlank') {
-            for (const answer of currentQuestion.answers) {
-                if (answer.toLowerCase() === answer.toLowerCase()) {
+        }
+        if (question.type === 'trueFalse') {
+            return answer.toLowerCase() === question.answer.toLowerCase();
+        } else if (question.type === 'multipleChoice') {
+            return answer === question.answer;
+        } else if (question.type === 'fillInTheBlank') {
+            for (const expectedAnswer of question.answers) {
+                if (answer.toLowerCase() === expectedAnswer.toLowerCase()) {
                     return true; // Correct answer
                 }
             }
@@ -88,8 +90,7 @@ const QuizPreviewPage: React.FC = () => {
     };
 
     const score = quiz.questions.reduce((total: any, q: any) => {
-        const answer = answers[q.id];
-        if (submitted && answer === q.correctAnswer) {
+        if (submitted && isIncorrect(q)) {
             return total + q.points;
         }
         return total;
@@ -251,7 +252,7 @@ const QuizPreviewPage: React.FC = () => {
 
             {submitted && (
                 <div className="mt-6 border-t pt-4">
-                    <p className="text-lg font-semibold">Quiz completed. You scored {score} out of {quiz.questions.reduce((a, q) => a + q.points, 0)}.</p>
+                    <p className="text-lg font-semibold">Quiz completed. You scored {score} out of {quiz.questions.reduce((a: any, q: any) => a + q.points, 0)}.</p>
                     <button
                         className="mt-2 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
                         onClick={() => alert('Navigate to Quiz Editor')}
