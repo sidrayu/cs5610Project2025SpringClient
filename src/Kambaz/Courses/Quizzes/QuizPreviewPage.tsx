@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { useLocation } from "react-router-dom";
 import { useParams } from "react-router";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { AlertCircle } from 'lucide-react'; // or use any alert icon
 import '../../styles.css'; // optional: external styling
-import { GrEdit } from "react-icons/gr";
 import { ListGroup, FormCheck } from "react-bootstrap";
 
 export type Question = {
@@ -26,8 +24,7 @@ export type Quiz = {
 
 // Components
 const QuizPreviewPage: React.FC = () => {
-    const { pathname } = useLocation();
-    const { cid, qid } = useParams();
+    const { qid } = useParams();
     const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes);
     const quiz = quizzes.find((q: any) => q._id === qid);
 
@@ -65,6 +62,25 @@ const QuizPreviewPage: React.FC = () => {
         console.log("handleAnswer.Answers1: ", answers);
         setAnswers({ ...answers, [currentQuestion._id]: value });
         console.log("handleAnswer.Answers2: ", answers);
+    };
+
+    const isIncorrect = (question: any) => {
+        const answer: any = answers[question._id];
+        if (!answer)
+            return false; // No answer provided
+        if (currentQuestion.type === 'trueFalse') {
+            return answer.toLowerCase() === currentQuestion.answer.toLowerCase();
+        } else if (currentQuestion.type === 'multipleChoice') {
+            return answer === currentQuestion.answer;
+        } else if (currentQuestion.type === 'fillInTheBlank') {
+            for (const answer of currentQuestion.answers) {
+                if (answer.toLowerCase() === answer.toLowerCase()) {
+                    return true; // Correct answer
+                }
+            }
+            return false; // No correct answer found
+        }
+        return false;
     };
 
     const handleSubmit = () => {
@@ -117,7 +133,7 @@ const QuizPreviewPage: React.FC = () => {
                                     type="radio"
                                     label={option}
                                     name="formHorizontalRadios"
-                                    checked={answers[currentQuestion._id] === option}
+                                    checked={answers[currentQuestion._id]?.toLowerCase() === option.toLowerCase()}
                                     onChange={() => handleAnswer(option)}
                                     disabled={submitted}
                                     key={option}
@@ -125,29 +141,6 @@ const QuizPreviewPage: React.FC = () => {
                                     value={option}
                                 />
                             ))}
-                            {/* {question.choices.map((choice: any) => (
-                                <FormCheck className="align-items-center mb-3" type="radio" label={choice.title} name="formHorizontalRadios" />
-                            ))} */}
-                            {/* 
-                            <div className="space-y-2">
-                                {['True', 'False'].map((option) => (
-                                    <label
-                                        key={option}
-                                        className={`block p-2 rounded cursor-pointer hover:bg-gray-100 ${answers[currentQuestion._id] === option ? 'bg-gray-100' : ''}`}
-                                        onClick={() => !submitted && handleAnswer(option)}
-                                    >
-                                        <input
-                                            type="radio"
-                                            name={`q${currentQuestion._id}`}
-                                            value={option}
-                                            checked={answers[currentQuestion._id] === option}
-                                            onChange={() => handleAnswer(option)}
-                                            disabled={submitted}
-                                        />{' '}
-                                        {option}
-                                    </label>
-                                ))}
-                            </div> */}
                         </ListGroup.Item>
                     </>)}
 
@@ -167,33 +160,25 @@ const QuizPreviewPage: React.FC = () => {
                         <ListGroup.Item className="wd-quiz ps-3 p-10 mb-0 fs-5 border-secondary">
                             <div className="d-flex align-items-center gap-2">
                                 <p className="me-2 mb-0 fs-5">{currentQuestion.question} </p>
-
                             </div>
                             <hr />
 
-                            {/* <div className="space-y-2">
-                                {currentQuestion.choices?.map((opt: any) => (
-                                    <label key={opt._id} className="block">
-                                        <input
-                                            type="radio"
-                                            name={`q${opt._id}`}
-                                            value={opt.title}
-                                            // checked={answers[currentQuestion._id][opt._id] === opt._id}
-                                            onChange={() => handleAnswer(opt)}
-                                            disabled={submitted}
-                                        />{' '}
-                                        {opt}
-                                    </label>
-                                ))}
-                            </div> */}
-                            {/* {question.choices.map((choice: any) => (
-                                <FormCheck className="align-items-center mb-3" type="radio" label={choice.title} name="formHorizontalRadios" />
-                            ))} */}
-
+                            {currentQuestion.choices.map((option: any) => (
+                                <FormCheck
+                                    className="align-items-center mb-3"
+                                    type="radio"
+                                    label={option.title}
+                                    name="formHorizontalRadios"
+                                    checked={answers[currentQuestion._id] === option._id}
+                                    onChange={() => handleAnswer(option._id)}
+                                    disabled={submitted}
+                                    key={option._id}
+                                    id={`wd-quiz-${option._id}`}
+                                    value={option.title}
+                                />
+                            ))}
                         </ListGroup.Item>
                     </>)}
-
-
 
                 {currentQuestion.type === "fillInTheBlank" && (
                     <>
@@ -205,14 +190,6 @@ const QuizPreviewPage: React.FC = () => {
                                 </div>
                                 <div className="d-flex align-items-center gap-2">
                                     <p className="me-2 mb-0 fw-bold fs-5">Pts: {currentQuestion.points}</p>
-                                    <button
-                                        className="btn btn-link p-0 text-danger fs-3"
-                                        id="wd-edit-question"
-                                        // onClick={() => { console.log("question index", questions.indexOf(question)); handleShow(questions.indexOf(question)); }}
-                                        style={{ textDecoration: 'none' }}
-                                    >
-                                        <GrEdit />
-                                    </button>
                                 </div>
                             </div>
                         </ListGroup.Item>
@@ -220,79 +197,30 @@ const QuizPreviewPage: React.FC = () => {
                             <div className="d-flex align-items-center gap-2">
                                 <p className="me-2 mb-0 fs-5">{currentQuestion.question}</p>
                             </div>
+                            <input
+                                type="text"
+                                className="mt-2 border px-2 py-1 rounded"
+                                value={answers[currentQuestion._id] || ''}
+                                onChange={(e) => handleAnswer(e.target.value)}
+                                disabled={submitted}
+                            />
                         </ListGroup.Item>
                     </>)}
 
                 <br /><br />
+                <ListGroup.Item className="wd-quiz ps-3 p-10 mb-0 fs-5 border-secondary">
+                    {submitted && !isIncorrect(currentQuestion) && (
+                        <div className="d-flex align-items-center gap-2">
+                            <p className="me-2 mb-0 fs-5 text-danger">Incorrect</p>
+                        </div>
+                    )}
+                    {submitted && isIncorrect(currentQuestion) && (
+                        <div className="d-flex align-items-center gap-2">
+                            <p className="me-2 mb-0 fs-5 text-success">Correct</p>
+                        </div>
+                    )}
+                </ListGroup.Item>
             </ListGroup>
-
-
-
-            <div className="border rounded p-4 mb-6">
-                <div className="flex justify-between items-center border-b pb-2 mb-2">
-                    <span className="font-semibold text-lg">{currentQuestion.title}</span>
-                    <span className="text-gray-600 text-sm">{currentQuestion.points} ptsDD</span>
-                </div>
-
-                <p className="mb-4 whitespace-pre-line">{currentQuestion.question}</p>
-
-                {/* {currentQuestion.type === 'trueFalse' && (
-                    <div className="space-y-2">
-                        {['True', 'False'].map((option) => (
-                            <label
-                                key={option}
-                                className={`block p-2 rounded cursor-pointer hover:bg-gray-100 ${answers[currentQuestion._id] === option ? 'bg-gray-100' : ''}`}
-                                onClick={() => !submitted && handleAnswer(option)}
-                            >
-                                <input
-                                    type="radio"
-                                    name={`q${currentQuestion._id}`}
-                                    value={option}
-                                    checked={answers[currentQuestion._id] === option}
-                                    onChange={() => handleAnswer(option)}
-                                    disabled={submitted}
-                                />{' '}
-                                {option}
-                            </label>
-                        ))}
-                    </div>
-                )} */}
-
-                {/* {currentQuestion.type === 'multipleChoice' && (
-                    <div className="space-y-2">
-                        {currentQuestion.options?.map((opt) => (
-                            <label key={opt} className="block">
-                                <input
-                                    type="radio"
-                                    name={`q${currentQuestion._id}`}
-                                    value={opt}
-                                    checked={answers[currentQuestion._id] === opt}
-                                    onChange={() => handleAnswer(opt)}
-                                    disabled={submitted}
-                                />{' '}
-                                {opt}
-                            </label>
-                        ))}
-                    </div>
-                )} */}
-
-                {/* {currentQuestion.type === 'fillInTheBlank' && (
-                    <input
-                        type="text"
-                        className="mt-2 border px-2 py-1 rounded"
-                        value={answers[currentQuestion._id] || ''}
-                        onChange={(e) => handleAnswer(e.target.value)}
-                        disabled={submitted}
-                    />
-                )} */}
-
-                {submitted && answers[currentQuestion._id] !== currentQuestion.correctAnswer && (
-                    <p className="text-red-600 mt-2">Incorrect</p>
-                )}
-                {submitted && answers[currentQuestion._id] === currentQuestion.correctAnswer && (
-                    <p className="text-green-600 mt-2">Correct</p>
-                )}
-            </div>
 
             <div className="flex justify-between">
                 <button
