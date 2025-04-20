@@ -45,6 +45,7 @@ export default function QuizEditor() {
 
     useEffect(() => {
         if (quiz) {
+
             setFormData((prev) => ({
                 ...quiz,
                 questions: quiz.questions ?? prev.questions ?? []
@@ -80,7 +81,7 @@ export default function QuizEditor() {
 
     };
 
-    const handleSave = async () => {
+    const handleSave = async (publish = false) => {
         //
         // dispatch(updateQuiz(formData));
         // navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`);
@@ -89,10 +90,12 @@ export default function QuizEditor() {
             alert("Missing course or quiz ID");
             return;
         }
+
         try {
             const merged = {
                 ...quiz,
                 ...formData,
+                isPublished: publish ? true : formData.isPublished || false,
             };
 
             const updatedQuiz = await updateQuizById(cid, qid, merged);
@@ -104,6 +107,8 @@ export default function QuizEditor() {
         }
     };
 
+
+
     function handleCancle() {
         navigate(`/Kambaz/Courses/${cid}/Quizzes`);
     }
@@ -112,7 +117,10 @@ export default function QuizEditor() {
     if (!quiz) return <div className="text-danger">Quiz not found</div>;
 
 
-  
+    const handleSaveNotPublish = () => handleSave(false);
+    const handleSaveAndPublish = () => handleSave(true);
+
+
     return (
     <div >
         <Nav variant="tabs">
@@ -433,8 +441,11 @@ export default function QuizEditor() {
                     <Button variant="secondary" onClick={handleCancle}>
                         Cancel
                     </Button>
-                    <Button variant="danger" onClick={handleSave}>
+                    <Button variant="danger" onClick={handleSaveNotPublish}>
                         Save
+                    </Button>
+                    <Button variant="success" onClick={handleSaveAndPublish}>
+                        Save & Publish
                     </Button>
                 </div>
             </Form>
