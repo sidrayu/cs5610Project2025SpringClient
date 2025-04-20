@@ -100,7 +100,7 @@ export default function QuizEditor() {
 
             const updatedQuiz = await updateQuizById(cid, qid, merged);
             dispatch(updateQuiz(updatedQuiz));
-            navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`);
+            navigate(`/Kambaz/Courses/${cid}/Quizzes/`);
         } catch (error) {
             console.error("Failed to update quiz:", error);
             alert("Error saving quiz");
