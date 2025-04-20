@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from "react-router";
+import { useParams, Link } from "react-router-dom";
 
 import { useSelector } from "react-redux";
 
@@ -7,24 +7,36 @@ import { AlertCircle } from 'lucide-react'; // or use any alert icon
 import '../../styles.css'; // optional: external styling
 import { ListGroup, FormCheck } from "react-bootstrap";
 
-export type Question = {
-    id: number;
-    type: 'truefalse' | 'multiple' | 'fillblank';
-    questionText: string;
-    options?: string[];
-    correctAnswer: string;
-    points: number;
-};
+// export type Question = {
+//     id: number;
+//     type: 'truefalse' | 'multiple' | 'fillblank';
+//     questionText: string;
+//     options?: string[];
+//     correctAnswer: string;
+//     points: number;
+// };
 
-export type Quiz = {
-    title: string;
-    questions: Question[];
-    startTime: Date;
+// export type Quiz = {
+//     title: string;
+//     questions: Question[];
+//     startTime: Date;
+// };
+
+const buttonStyle = {
+    backgroundColor: '#f8f9fa',
+    border: '1px solid #dee2e6',
+    color: '#6c757d',
+    padding: '6px 12px',
+    borderRadius: '4px',
+    textDecoration: 'none',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px'
 };
 
 // Components
 const QuizPreviewPage: React.FC = () => {
-    const { qid } = useParams();
+    const { cid, qid } = useParams();
     const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes);
     const quiz = quizzes.find((q: any) => q._id === qid);
 
@@ -50,24 +62,14 @@ const QuizPreviewPage: React.FC = () => {
     const dateStr = `${now.toLocaleDateString('en-US', options)} at ${timeString}`;
 
     const currentQuestion = quiz.questions[currentIndex];
-    // console.log("Current Question: ", currentQuestion);
-    // console.log("Current Index: ", currentIndex);
-    console.log("Answers: ", answers);
-    // console.log("Submitted: ", submitted);
-    // console.log("Quiz: ", quiz);
 
     const handleAnswer = (value: string) => {
-        // console.log("handleAnswer.value", value);
-        // console.log("handleAnswer.currentQuestion", currentQuestion);
-        // console.log("handleAnswer.Answers1: ", answers);
         setAnswers({ ...answers, [currentQuestion._id]: value });
-        // console.log("handleAnswer.Answers2: ", answers);
     };
 
     const isIncorrect = (question: any) => {
         const answer: any = answers[question._id];
         if (!answer) {
-            console.log("Answer not provided");
             return false; // No answer provided
         }
         if (question.type === 'trueFalse') {
@@ -242,10 +244,16 @@ const QuizPreviewPage: React.FC = () => {
                     </button>
                 ) : (
                     <button
-                        className="px-4 py-2 bg-green-500 text-white rounded"
+                        className={`px-4 py-2 rounded ${
+                            submitted 
+                            ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
+                            : 'bg-green-500 text-white hover:bg-green-600'
+                        }`}
                         onClick={handleSubmit}
+                        disabled={submitted}
+                        style={submitted ? {} : { backgroundColor: '#10b981' }}
                     >
-                        Submit Quiz
+                        {submitted ? 'Quiz Submitted' : 'Submit Quiz'}
                     </button>
                 )}
             </div>
@@ -253,12 +261,13 @@ const QuizPreviewPage: React.FC = () => {
             {submitted && (
                 <div className="mt-6 border-t pt-4">
                     <p className="text-lg font-semibold">Quiz completed. You scored {score} out of {quiz.questions.reduce((a: any, q: any) => a + q.points, 0)}.</p>
-                    <button
+                    <Link 
+                        to={`/Kambaz/Courses/${cid}/Quizzes/${qid}/Editor/Questions`}
                         className="mt-2 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                        onClick={() => alert('Navigate to Quiz Editor')}
+                        style={buttonStyle}
                     >
-                        Keep Editing This Quiz
-                    </button>
+                        Edit Quiz Questions
+                    </Link>
                 </div>
             )}
         </div>
