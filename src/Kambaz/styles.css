@@ -30,3 +30,19 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
   border-left: 3px solid green !important;
 }
 
+.preview-banner {
+  display: flex;
+  align-items: center;
+  background-color: #fcebea; /* light red */
+  color: #c53030;            /* dark red */
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.preview-banner .icon {
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+}
