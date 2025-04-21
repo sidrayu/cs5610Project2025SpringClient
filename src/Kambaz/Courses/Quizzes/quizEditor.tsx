@@ -46,7 +46,7 @@ export default function QuizEditor() {
     useEffect(() => {
         if (quiz) {
 
-            setFormData((prev) => ({
+            setFormData((prev: { questions: any; }) => ({
                 ...quiz,
                 questions: quiz.questions ?? prev.questions ?? []
             }));
