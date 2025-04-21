@@ -3,6 +3,7 @@
   "userId": "234",
   "quizId": "quiz123",
   "points": 107,
+  "attemptCount": 1,
   "lastAttempt": {
     "date": "2025-04-19T10:15:00Z",
     "score": 75,
