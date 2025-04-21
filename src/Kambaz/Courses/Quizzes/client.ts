@@ -11,6 +11,57 @@ const COURSE_API = `${REMOTE_SERVER}/api/courses`;
 const QUIZ_API = `${REMOTE_SERVER}/api/quizzes`;
 const axiosWithCredentials = axios.create({ withCredentials: true });
 
+// Quiz 类型定义
+export interface Quiz {
+  _id: string;
+  course: string;
+  title: string;
+  isPublished: boolean;
+  type: "Graded Quiz" | "Practice Quiz" | "Graded Survey" | "Ungraded Survey";
+  points: number;
+  multipleAttempts: boolean;
+  numberAttempts: number;
+  questions: QuizQuestion[];
+}
+
+export interface QuizQuestion {
+  _id: string;
+  title: string;
+  type: "multipleChoice" | "trueFalse" | "fillInTheBlank";
+  points: number;
+  question: string;
+  choices?: QuizChoice[];
+  answer?: string;
+  answers?: string[];
+}
+
+export interface QuizChoice {
+  _id: string;
+  title: string;
+}
+
+export interface QuizAnswer {
+  questionId: string;
+  studentAnswer: string;
+  isCorrect: boolean;
+  correctAnswer: string;
+}
+
+export interface QuizAttempt {
+  _id: string;
+  studentId: string;
+  quizId: string;
+  score: number;
+  answers: QuizAnswer[];
+  timestamp: string;
+}
+
+export interface QuizConfig {
+  id: string;
+  multipleAttempts: boolean;
+  maxAttempts: number;
+}
+
 // Get all quizzes
 export const findAllQuizzes = async () => {
     try {
@@ -36,7 +87,7 @@ export const findQuizzesByCourseId = async (courseId: string) => {
 };
 
 // Get quiz by ID
-export const findQuizById = async (courseId: string, quizId: string) => {
+export const findQuizById = async (courseId: string, quizId: string): Promise<Quiz> => {
     try {
         const response = await axiosWithCredentials.get(`${COURSE_API}/${courseId}/quizzes/${quizId}`);
         return response.data;
@@ -91,53 +142,6 @@ export const toggleQuizPublish = async (courseId: string, quizId: string, isPubl
 };
 
 /**
- * 测验答案接口
- * 
- * 功能：
- * 1. 定义单个问题的答案结构
- * 2. 包含答案的正确性信息
- * 3. 存储正确答案用于比较
- */
-export interface QuizAnswer {
-  questionId: string;
-  studentAnswer: string;
-  isCorrect: boolean;
-  correctAnswer: string;
-}
-
-/**
- * 测验尝试接口
- * 
- * 功能：
- * 1. 定义一次完整的测验尝试
- * 2. 包含学生ID和测验ID
- * 3. 存储所有问题的答案
- * 4. 记录分数和提交时间
- */
-export interface QuizAttempt {
-  id: string;
-  studentId: string;
-  quizId: string;
-  score: number;
-  answers: QuizAnswer[];
-  timestamp: string;
-}
-
-/**
- * 测验配置接口
- * 
- * 功能：
- * 1. 定义测验的重试规则
- * 2. 控制是否允许多次尝试
- * 3. 设置最大尝试次数
- */
-export interface QuizConfig {
-  id: string;
-  multipleAttempts: boolean;
-  maxAttempts: number;
-}
-
-/**
  * 获取测验尝试记录
  * 
  * 功能：
@@ -152,8 +156,13 @@ export interface QuizConfig {
  * - QuizAttempt[]: 测验尝试数组
  */
 export const fetchQuizAttempts = async (quizId: string, studentId: string): Promise<QuizAttempt[]> => {
-  const response = await axiosWithCredentials.get(`${QUIZ_API}/${quizId}/attempts?studentId=${studentId}`);
-  return response.data;
+  try {
+    const response = await axiosWithCredentials.get(`${QUIZ_API}/${quizId}/attempts?studentId=${studentId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching attempts for quiz ${quizId}:`, error);
+    throw error;
+  }
 };
 
 /**
@@ -171,8 +180,13 @@ export const fetchQuizAttempts = async (quizId: string, studentId: string): Prom
  * - QuizAttempt | null: 最新的测验尝试，如果没有则返回null
  */
 export const fetchLatestQuizAttempt = async (quizId: string, studentId: string): Promise<QuizAttempt | null> => {
-  const response = await axiosWithCredentials.get(`${QUIZ_API}/${quizId}/attempts/latest?studentId=${studentId}`);
-  return response.data;
+  try {
+    const response = await axiosWithCredentials.get(`${QUIZ_API}/${quizId}/attempts/latest?studentId=${studentId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching latest attempt for quiz ${quizId}:`, error);
+    throw error;
+  }
 };
 
 /**
@@ -196,11 +210,21 @@ export const submitQuizAttempt = async (
   studentId: string,
   answers: QuizAnswer[]
 ): Promise<QuizAttempt> => {
-  const response = await axiosWithCredentials.post(`${QUIZ_API}/${quizId}/attempts`, {
-    studentId,
-    answers,
-  });
-  return response.data;
+  try {
+    const response = await axiosWithCredentials.post(`${QUIZ_API}/${quizId}/attempts`, {
+      studentId,
+      answers
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      if (error.response.status === 400) {
+        throw new Error(error.response.data.message);
+      }
+    }
+    console.error(`Error submitting attempt for quiz ${quizId}:`, error);
+    throw error;
+  }
 };
 
 /**
