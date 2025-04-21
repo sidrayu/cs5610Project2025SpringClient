@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { AlertCircle } from 'lucide-react'; // or use any alert icon
 import '../../styles.css'; // optional: external styling
 import { ListGroup, FormCheck } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
 // export type Question = {
 //     id: number;
@@ -99,7 +100,9 @@ const QuizPreviewPage: React.FC = () => {
     }, 0);
 
     return (
+        <Container className="mt-3">
         <div className="max-w-3xl mx-auto p-6">
+
             <h1 className="text-2xl font-bold mb-2">{quiz.title}</h1>
             <div className="preview-banner">
                 <AlertCircle className="icon" />
@@ -271,6 +274,7 @@ const QuizPreviewPage: React.FC = () => {
                 </div>
             )}
         </div>
+        </Container>
     );
 };
 
