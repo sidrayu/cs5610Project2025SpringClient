@@ -48,6 +48,9 @@ const QuizPreviewPage: React.FC = () => {
     if (!quiz) {
         return <div>Loading quiz or quiz not found...</div>;
     }
+    if (quiz.questions.length === 0) {
+        return <div>No questions in this quiz.</div>;
+    }
 
     // Get current date
     const now = new Date();
