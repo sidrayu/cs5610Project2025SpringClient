@@ -1,5 +1,6 @@
 [{
   "_id": "quizAnswer123",
+  "courseId": "RS101",
   "userId": "234",
   "quizId": "quiz123",
   "points": 107,
