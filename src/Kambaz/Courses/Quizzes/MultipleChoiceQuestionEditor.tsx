@@ -142,7 +142,7 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
     
 
     const handleUpdateQuestion = async () => {
-        let updatedQuestion = { ...question };
+        let updatedQuestion = { ...question, _id: uuidv4() };
         console.log("Update question", updatedQuestion);
         console.log(question);
         console.log("Correct answer: ", correctAnswer);
