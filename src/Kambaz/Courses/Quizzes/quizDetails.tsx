@@ -4,6 +4,7 @@ import { Button } from "react-bootstrap";
 import { FaPencilAlt } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { findQuizById } from "./client";
+import { FormCheck, ListGroup, Container, Row, Col, Table } from "react-bootstrap";
 
 export default function QuizDetails() {
     const { cid, qid } = useParams();
@@ -12,7 +13,7 @@ export default function QuizDetails() {
     const [quiz, setQuiz] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const isFaculty = currentUser?.role === "FACULTY";
-    
+    const questions = quiz?.questions || [];
     useEffect(() => {
         const fetchQuizDetails = async () => {
             if (!cid || !qid) return;
@@ -112,11 +113,141 @@ export default function QuizDetails() {
                 
                 <br /><br />
                 {!isFaculty && (
-                    <div className="text-center mt-3">
-                    <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}/Start`}>
-                        <Button variant="danger" size="lg">Start Quiz</Button>
-                    </Link>
+                    <><div className="text-center mt-3">
+                        <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}/Start`}>
+                            <Button variant="danger" size="lg">Start Quiz</Button>
+                        </Link>
                     </div>
+
+                    {/* Quiz Review */}
+                    <div className=" mt-3">
+                    <Container className="border-top pt-3 mt-3">
+                            <Row >
+                                <Col xs="auto" className="fw-bold">Due:</Col>{quiz.untilDate}
+                                <Col xs="auto" className="fw-bold">Points:</Col>{quiz.points}
+                                <Col xs="auto" className="fw-bold">Questions:</Col>{questions.length}
+                            </Row>
+                            <Row>
+                                <Col xs="auto" className="fw-bold">Available:</Col>{quiz.availableDate}
+                                <Col xs="auto" className="fw-bold">Time Limit:</Col>{quiz.timeLimit} Minutes
+                            </Row>
+                        
+                            <hr />
+                            <br />
+                            <p className="text-sm text-gray-600 mb-4">
+                            {new Date() > new Date(quiz.untilDate)
+                                ? `This quiz was locked: ${quiz.untilDate}`
+                                : `This quiz will be locked: ${quiz.untilDate}`}
+                            </p>
+                            <h4 className="mb-4">Attempt History</h4>
+
+                            <Table className="mb-4">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Attempt</th>
+                                    <th>Time</th>
+                                    <th>Score</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td className="fw-bold">LATEST</td>
+                                    <td className="text-danger">Attempt 1</td>
+                                    <td>8 minutes</td>
+                                    <td>29 out of 29</td>
+                                </tr>
+                                </tbody>
+                            </Table>
+                            <hr/>
+
+                            <div>
+                                <p><strong>Score for this quiz:</strong> <strong>29</strong> out of 29</p>
+                                <p>Submitted Jan 27 at 8:57pm</p>
+                                <p>This attempt took 8 minutes.</p>
+                            </div>
+                        
+                            {questions.map((question: any) => (
+                                <ListGroup className="rounded-0" id="wd-modules">
+                                    {question.type === "multipleChoice" && (
+                                    <>
+                                        {/* multipleChoice */}
+                                        <ListGroup.Item className="wd-quiz p-0 mb-0 fs-5 border-secondary">
+                                            <div className="wd-title d-flex align-items-center justify-content-between p-2 ps-3 bg-secondary text-dark">
+                                                <div className="d-flex align-items-center">
+                                                    <span className="me-2 mb-0 fw-bold fs-5"> {question.title} </span>
+                                                </div>
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <p className="me-2 mb-0 fw-bold fs-5">Pts: {question.points} </p>
+                                                </div>
+                                            </div> 
+                                        </ListGroup.Item>
+                                        <ListGroup.Item className="wd-quiz ps-3 p-10 mb-0 fs-5 border-secondary">
+                                            <div className="d-flex align-items-center gap-2">
+                                                <p className="me-2 mb-0 fs-5">{question.question} </p>
+                                                
+                                            </div>
+                                            <hr />
+                                            {question.choices.map((choice: any) => (
+                                                
+                                                <FormCheck className="align-items-center mb-3" type="radio" label={choice.title} name="formHorizontalRadios"/>
+                                                
+                                            ))}
+                                            
+                                        </ListGroup.Item>
+                                    </>)}
+
+                                    {question.type === "trueFalse" && (
+                                    <>
+                                    {/* trueFalse */}
+                                        <ListGroup.Item className="wd-quiz p-0 mb-0 fs-5 border-secondary">
+                                        <div className="wd-title d-flex align-items-center justify-content-between p-2 ps-3 bg-secondary text-dark">
+                                            <div className="d-flex align-items-center">
+                                                <span className="me-2 mb-0 fw-bold fs-5"> {question.title}</span>
+                                            </div>
+                                            <div className="d-flex align-items-center gap-2">
+                                                <p className="me-2 mb-0 fw-bold fs-5">Pts: {question.points}</p>
+                                            </div>
+                                        </div> 
+                                        </ListGroup.Item>
+                                        <ListGroup.Item className="wd-quiz ps-3 p-10 mb-0 fs-5 border-secondary">
+                                            <div className="d-flex align-items-center gap-2">
+                                                <p className="me-2 mb-0 fs-5">{question.question}</p>
+                                            </div>
+                                            <hr />
+                                            <FormCheck className="align-items-center mb-3" type="radio" label="True" name="formHorizontalRadios"/>
+                                            <hr />
+                                            <FormCheck className="align-items-center mb-3" type="radio" label="False" name="formHorizontalRadios"/>
+                                        </ListGroup.Item>
+                                    </>)}
+
+                                    {question.type === "fillInTheBlank" && (
+                                    <>
+                                    {/* fillInTheBlank */}
+                                    <ListGroup.Item className="wd-quiz p-0 mb-0 fs-5 border-secondary">
+                                        <div className="wd-title d-flex align-items-center justify-content-between p-2 ps-3 bg-secondary text-dark">
+                                            <div className="d-flex align-items-center">
+                                                <span className="me-2 mb-0 fw-bold fs-5"> {question.title}</span>
+                                            </div>
+                                            <div className="d-flex align-items-center gap-2">
+                                                <p className="me-2 mb-0 fw-bold fs-5">Pts: {question.points}</p>
+                                            </div>
+                                        </div> 
+                                    </ListGroup.Item>
+                                    <ListGroup.Item className="wd-quiz ps-3 p-10 mb-0 fs-5 border-secondary">
+                                        <div className="d-flex align-items-center gap-2">
+                                            <p className="me-2 mb-0 fs-5">{question.question}</p>
+                                        </div>
+                                    </ListGroup.Item>
+                                    </>)}
+
+                                <br /><br />
+                                </ListGroup>
+                                ))}
+                        </Container>
+
+                        
+                    </div></>
                 )}
             </div>
 
