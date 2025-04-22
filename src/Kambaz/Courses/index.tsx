@@ -13,7 +13,6 @@ import QuizEditor from "./Quizzes/quizEditor";
 import QuestionEditor from "./Quizzes/questionsEdtior";
 import QuizPreviewPage from "./Quizzes/QuizPreviewPage";
 import QuizStart from "./Quizzes/quizStart";
-import QuizReview from "./Quizzes/QuizReview";
 
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
