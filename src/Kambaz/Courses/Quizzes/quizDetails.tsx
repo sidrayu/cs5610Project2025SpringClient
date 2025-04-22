@@ -262,11 +262,11 @@ export default function QuizDetails() {
                     {lastAttempt && (
                     <div className=" mt-3">
                     <Container className="border-top pt-3 mt-3">
-                            <p className="text-sm text-gray-600 mb-4">
+                            {/* <p className="text-sm text-gray-600 mb-4">
                             {new Date() > new Date(quiz.untilDate)
                                 ? `This quiz was locked: ${quiz.untilDate}`
                                 : `This quiz will be locked: ${quiz.untilDate}`}
-                            </p>
+                            </p> */}
                             <h4 className="mb-4">Attempt History</h4>
 
                             <Table className="mb-4">
@@ -293,11 +293,7 @@ export default function QuizDetails() {
                             </Table>
                             <hr/>
 
-                            <div>
-                                <p><strong>Score for this quiz:</strong> <strong>29</strong> out of 29</p>
-                                <p>Submitted {formatDate(lastAttempt.startTime)}</p>
-                                <p>This attempt took 8 minutes.</p>
-                            </div>
+                            <br />
                         
                             {questions.map((question: any) => (
                                 <ListGroup className="rounded-0" id="wd-modules">
