@@ -130,7 +130,7 @@ export default function QuestionEditor() {
 
     
             <div className="d-flex justify-content-center">
-                <Button variant="light" className="me-2">Cancel</Button>
+                {/* <Button variant="light" className="me-2">Cancel</Button> */}
                 <Button variant="danger" onClick={updateQuiz}>
                     Save
                 </Button>

@@ -13,7 +13,7 @@ export default function FillInAnswerItem({ fillinanswer, deleteFillInAnswer, set
         key={index}
         className="d-flex justify-content-between align-items-center border-0 rounded-0 mb-2"
         >
-                <FormLabel className="mb-0 me-3">
+                <FormLabel className="mb-0 me-3" style={{ color: "green" }}>
                     Possible Answer:
                 </FormLabel>
                 <FormControl

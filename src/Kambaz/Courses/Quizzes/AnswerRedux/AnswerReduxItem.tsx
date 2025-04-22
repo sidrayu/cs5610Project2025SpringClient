@@ -3,11 +3,12 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { TiPencil } from "react-icons/ti";
 import { FormCheck } from "react-bootstrap";
 
-export default function AnswerReduxItem({ answer, deleteAnswer, setAnswer, setIndex }: {
+export default function AnswerReduxItem({ answer, deleteAnswer, setAnswer, setIndex, setChecked}: {
   answer: { _id: string; title: string };
   deleteAnswer: (id: string) => void;
   setAnswer: (answer: { _id: string; title: string }) => void;
   setIndex: ( index: string) => void;
+  setChecked: (answerId: string) => boolean;
   }) {
   return (
     <ListGroup.Item key={answer._id} className="d-flex justify-content-between align-items-center border-0 rounded-0 mb-2">
@@ -17,6 +18,7 @@ export default function AnswerReduxItem({ answer, deleteAnswer, setAnswer, setIn
       label={answer.title}
       name="formHorizontalRadios"
       onClick={() => {console.log(`Chosen answer: ${answer.title}, Key: ${answer._id}`); setIndex(answer._id);}}
+      checked={setChecked(answer._id)}
     />
     <div className="d-flex gap-2">
       <Button
