@@ -96,8 +96,7 @@ export default function QuizDetails() {
             day: 'numeric',
             hour: 'numeric',
             minute: 'numeric',
-            hour12: true,
-            timeZone: 'UTC'
+            hour12: true
         }).replace(',', ' at');
     };
 

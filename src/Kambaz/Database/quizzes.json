@@ -11,7 +11,7 @@
   "multipleAttempts": true,
   "numberAttempts": 3,
   "showAnswersImmediately": false,
-  "showAnswersAfter": "2025-04-15T23:59:00Z",
+  "showAnswersAfter": "2025-04-15T23:59:00",
   "accessCode": "",
   "oneQuestionAtATime": true,
   "webcam": false,
@@ -237,9 +237,9 @@
   "oneQuestionAtATime": true,
   "webcam": false,
   "lock": false,
-  "dueDate": "2025-05-15T23:59:00Z",
-  "availableDate": "2025-05-01T08:00:00Z",
-  "untilDate": "2025-05-20T23:59:00Z",
+  "dueDate": "2025-05-15T23:59:00",
+  "availableDate": "2025-05-01T08:00:00",
+  "untilDate": "2025-05-20T23:59:00",
   "questions": [
     {
       "_id": "q29",

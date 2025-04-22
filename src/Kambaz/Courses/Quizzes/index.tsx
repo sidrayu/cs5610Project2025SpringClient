@@ -10,7 +10,7 @@ import "./quizstyle.css"
 import { Form } from 'react-bootstrap';
 import LessonControlButtons from "./LessonControlButtons";
 import { useEffect, useState } from "react";
-import { findQuizzesByCourseId, deleteQuiz as deleteQuizApi, toggleQuizPublish } from "./client";
+import { findQuizzesByCourseId, deleteQuiz as deleteQuizApi, toggleQuizPublish, findLastAnswers } from "./client";
 
 export default function Quizzes() {
     const { cid } = useParams();
@@ -18,6 +18,7 @@ export default function Quizzes() {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
+    const [quizAnswers, setQuizAnswers] = useState<any>({});
     
     const isFaculty = currentUser?.role === "FACULTY";
     
@@ -42,6 +43,32 @@ export default function Quizzes() {
         
         fetchQuizzes();
     }, [cid, dispatch]);
+    
+    // Fetch quiz answers for the current user
+    useEffect(() => {
+        const fetchQuizAnswers = async () => {
+            if (!currentUser || isFaculty) return;
+            
+            try {
+                const answers: any = {};
+                for (const quiz of quizzes) {
+                    if (quiz.course === cid) {
+                        const answer = await findLastAnswers(currentUser._id, quiz._id);
+                        if (answer) {
+                            answers[quiz._id] = answer;
+                        }
+                    }
+                }
+                setQuizAnswers(answers);
+            } catch (error) {
+                console.error("Error fetching quiz answers:", error);
+            }
+        };
+        
+        if (quizzes.length > 0) {
+            fetchQuizAnswers();
+        }
+    }, [quizzes, cid, currentUser, isFaculty]);
     
     const removeQuiz = async (quizId: string) => {
         if (!cid) return;
@@ -103,6 +130,10 @@ export default function Quizzes() {
 
     const getStudentScore = (quiz: any) => {
         if (!isFaculty && currentUser) {
+            if (quizAnswers[quiz._id]) {
+                return quizAnswers[quiz._id].score;
+            }
+            
             const quizData = quizScores.quizzes.find(
                 (q: any) => q.quiz === quiz._id
             );
@@ -129,13 +160,6 @@ export default function Quizzes() {
 
     return (
         <div>
-            {/* <Link to="/Kambaz/Courses/RS101/Quizzes/A1">
-            <h1>quiz-A1</h1>
-            <h1>quiz-A2</h1>
-            <h1>quiz-A3</h1>
-            <h1>quiz-A4</h1>
-
-            </Link> */}
             <QuizzesControls /><br /><br /><br /><br />
 
             <ListGroup className="rounded-0" id="wd-modules">
