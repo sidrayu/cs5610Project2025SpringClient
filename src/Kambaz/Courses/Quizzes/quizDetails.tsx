@@ -3,8 +3,9 @@ import { Link, useParams } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { FaPencilAlt } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { findQuizById } from "./client";
-
+import { findQuizById, findLastAnswers } from "./client";
+import { FormCheck, ListGroup, Container, Row, Col, Table } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 export default function QuizDetails() {
     const { cid, qid } = useParams();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -12,31 +13,70 @@ export default function QuizDetails() {
     const [quiz, setQuiz] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const isFaculty = currentUser?.role === "FACULTY";
-    
-    useEffect(() => {
-        const fetchQuizDetails = async () => {
-            if (!cid || !qid) return;
-            
-            try {
-                setLoading(true);
-                // First try to fetch from the database
-                const fetchedQuiz = await findQuizById(cid, qid);
-                setQuiz(fetchedQuiz);
-            } catch (error) {
-                console.error("Error fetching quiz details from database:", error);
-                
-                // If not found in database, try to find in Redux store
-                const quizFromStore = quizzes.find((q: any) => q._id === qid);
-                if (quizFromStore) {
-                    console.log("Found quiz in Redux store:", quizFromStore);
-                    setQuiz(quizFromStore);
-                }
-            } finally {
-                setLoading(false);
+    const questions = quiz?.questions || [];
+
+    const [lastAttempt, setLastAttempt] = useState<any>({
+        _id: "",
+        courseId: "",
+        userId: "",
+        quizId: "",
+        points: 0,
+        attemptCount: 0,
+        lastAttempt: {
+            date: "",
+            score: 0,
+            timeSpent: 0
+        },
+        answers: [
+            {
+                questionId: "",
+                answer: "",
+                isCorrect: false,
+                score: 0
             }
-        };
+        ]
+    });
+
+    const fetchLastAttemptAnswers = async () => {
+        try {
+            const response = await findLastAnswers(currentUser._id, qid!);
+            console.log("Last attempt answers:", response);
+            setLastAttempt(response);
+        } catch (error) {
+            console.error("Error fetching last attempt answers:", error);
+        }
+    };  
+
+
+    const fetchQuizDetails = async () => {
+        if (!cid || !qid) return;
         
+        try {
+            setLoading(true);
+            // First try to fetch from the database
+            const fetchedQuiz = await findQuizById(cid, qid);
+            console.log("Fetched quiz from database:", fetchedQuiz);
+            setQuiz(fetchedQuiz);
+        } catch (error) {
+            console.error("Error fetching quiz details from database:", error);
+            
+            // If not found in database, try to find in Redux store
+            const quizFromStore = quizzes.find((q: any) => q._id === qid);
+            if (quizFromStore) {
+                console.log("Found quiz in Redux store:", quizFromStore);
+                setQuiz(quizFromStore);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    
+
+    useEffect(() => {
         fetchQuizDetails();
+        fetchLastAttemptAnswers();
     }, [cid, qid, quizzes]);
     
     if (loading) {
@@ -71,6 +111,94 @@ export default function QuizDetails() {
         display: 'inline-flex',
         alignItems: 'center',
         gap: '6px'
+    };
+
+    const arrowStyle: React.CSSProperties = {
+        display: 'inline-block',
+        position: 'relative',
+        backgroundColor: '#4CAF50',
+        color: 'white',
+        padding: '10px 20px',
+        fontWeight: 'bold',
+        borderRadius: '4px 0 0 4px',
+        margin: '10px 0',
+      };
+      const arrowStyleRed: React.CSSProperties = {
+        display: 'inline-block',
+        position: 'relative',
+        backgroundColor: 'red',
+        color: 'white',
+        padding: '10px 20px',
+        fontWeight: 'bold',
+        borderRadius: '4px 0 0 4px',
+        margin: '10px 0',
+      };
+      
+      const arrowHeadStyle = {
+        width: 0,
+        height: 0,
+        borderTop: '25px solid transparent',
+        borderBottom: '25px solid transparent',
+        borderLeft: '20px solid #4CAF50',
+      };
+
+      const arrowHeadStyleRed = {
+        width: 0,
+        height: 0,
+        borderTop: '25px solid transparent',
+        borderBottom: '25px solid transparent',
+        borderLeft: '20px solid red',
+      };
+
+
+
+    const isIncorrect = (question: any) => {
+        if (!lastAttempt || !lastAttempt.answers) {
+            console.log("No last attempt or answers available");
+            fetchLastAttemptAnswers(); // No last attempt or answers available
+        }
+        let tempLastAttempt = {...lastAttempt};
+        return　 tempLastAttempt?.answers[questions.indexOf(question)]?.isCorrect ===true;
+    };
+
+
+    const setChecked = (index: number, choice: any) => {
+        console.log("setChecked called with lastAttempt:", lastAttempt, "and choice:", choice, "for question:", questions[index], "of type:", questions[index].type, 'and answer:', lastAttempt.answers[index]);
+        let answer: any = {...lastAttempt.answers[index]}.answer;
+        if (!answer) {
+            console.log("No answer provided for question:", questions[index]);
+            return false; // No answer provided
+        }
+        console.log("Checking multiple choice answer:", answer, "against choice:", choice._id);
+        return answer === choice._id;
+    };
+
+    const setTFChecked = (index: number, choice: string) => {
+        let answer: any = {...lastAttempt.answers[index]}.answer;
+        if (!answer) {
+            console.log("No answer provided for question:", questions[index]);
+            return false; // No answer provided
+        }
+        return answer === choice;
+    };
+
+    const hasMoreAttempts = () => {
+        if (!lastAttempt) {
+            console.log("No last attempt available");
+            fetchLastAttemptAnswers(); // No last attempt available
+        }
+        let tempQuiz = {...quiz};
+        let tempLastAttempt = {...lastAttempt};
+        console.log("hasMoreAttempts called with quiz:", tempQuiz.numberAttempts, "and lastAttempt:", tempLastAttempt);
+        if (tempLastAttempt.attemptCount > 0) {
+            if (tempQuiz.numberAttempts>tempLastAttempt?.attemptCount) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
     };
 
     return (
@@ -110,13 +238,239 @@ export default function QuizDetails() {
                     <hr className="mb-4" />
              )}
                 
-                <br /><br />
                 {!isFaculty && (
-                    <div className="text-center mt-3">
-                    <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}/Start`}>
-                        <Button variant="danger" size="lg">Start Quiz</Button>
-                    </Link>
+                    <><div className="text-center ">
+                        <Row >
+                            <Col xs="auto" className="fw-bold">Due:</Col>{quiz.untilDate}
+                            <Col xs="auto" className="fw-bold">Points:</Col>{quiz.points}
+                            <Col xs="auto" className="fw-bold">Questions:</Col>{questions.length}
+                        </Row>
+                        <Row>
+                            <Col xs="auto" className="fw-bold">Available:</Col>{quiz.availableDate}
+                            <Col xs="auto" className="fw-bold">Time Limit:</Col>{quiz.timeLimit} Minutes
+                            <Col xs="auto" className="fw-bold">Attempts:</Col>{quiz.numberAttempts}
+                        </Row>
+                        <hr/>
+                        {hasMoreAttempts() && (
+                            <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}/Start`}>
+                                <Button variant="danger" size="lg">Start Quiz</Button>
+                            </Link>
+                        )}
                     </div>
+
+                    {/* Quiz Review */}
+                    {lastAttempt && (
+                    <div className=" mt-3">
+                    <Container className="border-top pt-3 mt-3">
+                            <p className="text-sm text-gray-600 mb-4">
+                            {new Date() > new Date(quiz.untilDate)
+                                ? `This quiz was locked: ${quiz.untilDate}`
+                                : `This quiz will be locked: ${quiz.untilDate}`}
+                            </p>
+                            <h4 className="mb-4">Attempt History</h4>
+
+                            <Table className="mb-4">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Attempt</th>
+                                    <th>Time</th>
+                                    <th>Score</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td className="fw-bold">LATEST</td>
+                                    <td className="text-danger">Attempt {lastAttempt.attemptCount}</td>
+                                    <td>
+                                        {lastAttempt.timeSpent > 60 
+                                            ? `${Math.floor(lastAttempt.timeSpent / 60)} minutes` 
+                                            : `${lastAttempt.timeSpent} seconds`}
+                                    </td>
+                                    <td>{lastAttempt.score} out of {lastAttempt.points}</td>
+                                </tr>
+                                </tbody>
+                            </Table>
+                            <hr/>
+
+                            <div>
+                                <p><strong>Score for this quiz:</strong> <strong>29</strong> out of 29</p>
+                                <p>Submitted {formatDate(lastAttempt.startTime)}</p>
+                                <p>This attempt took 8 minutes.</p>
+                            </div>
+                        
+                            {questions.map((question: any) => (
+                                <ListGroup className="rounded-0" id="wd-modules">
+                                    {question.type === "multipleChoice" && (
+                                    <>
+                                        {/* multipleChoice */}
+                                        <Form.Group as={Row} className="mb-3">
+                                            <Form.Label column sm={2} className="text-end">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    {!isIncorrect(question) && (
+                                                           <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                                                           <span style={arrowStyleRed}>Incorrect!</span>
+                                                           <span style={arrowHeadStyleRed}></span>
+                                                         </div>
+                                                    )}
+                                                    {isIncorrect(question) && (
+                                                            <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                                                            <span style={arrowStyle}>Correct!</span>
+                                                            <span style={arrowHeadStyle}></span>
+                                                          </div>
+                                                    )}
+                                                </div>
+                                            </Form.Label>
+                                            <Col sm={10} className="ms-auto">
+                                            <ListGroup.Item className="wd-quiz p-0 mb-0 fs-5 border-secondary">
+                                                <div className="wd-title d-flex align-items-center justify-content-between p-2 ps-3 bg-secondary text-dark">
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="me-2 mb-0 fw-bold fs-5"> {question.title} </span>
+                                                    </div>
+                                                    <div className="d-flex align-items-center gap-2">                      
+                                                    </div>
+
+
+                                                    
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <p className="me-2 mb-0 fw-bold fs-5">Pts: {question.points} </p>
+                                                    </div>
+                                                </div> 
+                                            </ListGroup.Item>
+                                            <ListGroup.Item className="wd-quiz ps-3 p-10 mb-0 fs-5 border-secondary">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <p className="me-2 mb-0 fs-5">{question.question} </p>
+                                                    
+                                                </div>
+                                                <hr />
+                                                {question.choices.map((choice: any) => (
+                                                    <FormCheck 
+                                                        disabled
+                                                        className="align-items-center mb-3" 
+                                                        type="radio" 
+                                                        label={choice.title} 
+                                                        name={`formHorizontalRadios-${question._id}`} 
+                                                        checked={setChecked(questions.indexOf(question), choice)} 
+                                                        readOnly
+                                                    />
+                                                ))}
+                                                
+                                            </ListGroup.Item>
+                                            </Col>
+                                        </Form.Group>
+                                    </>)}
+
+                                    {question.type === "trueFalse" && (
+                                    <>
+                                    {/* trueFalse */}
+                                    <Form.Group as={Row} className="mb-3">
+                                        <Form.Label column sm={2} className="text-end">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    {!isIncorrect(question) && (
+                                                           <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                                                           <span style={arrowStyleRed}>Incorrect!</span>
+                                                           <span style={arrowHeadStyleRed}></span>
+                                                         </div>
+                                                    )}
+                                                    {isIncorrect(question) && (
+                                                            <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                                                            <span style={arrowStyle}>Correct!</span>
+                                                            <span style={arrowHeadStyle}></span>
+                                                          </div>
+                                                    )}
+                                                </div>
+                                        </Form.Label>
+                                        <Col sm={10} className="ms-auto">
+                                            <ListGroup.Item className="wd-quiz p-0 mb-0 fs-5 border-secondary">
+                                            <div className="wd-title d-flex align-items-center justify-content-between p-2 ps-3 bg-secondary text-dark">
+                                                <div className="d-flex align-items-center">
+                                                    <span className="me-2 mb-0 fw-bold fs-5"> {question.title}</span>
+                                                </div>
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <p className="me-2 mb-0 fw-bold fs-5">Pts: {question.points}</p>
+                                                </div>
+                                            </div> 
+                                            </ListGroup.Item>
+                                            <ListGroup.Item className="wd-quiz ps-3 p-10 mb-0 fs-5 border-secondary">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <p className="me-2 mb-0 fs-5">{question.question}</p>
+                                                </div>
+                                                <hr />
+                                                <FormCheck 
+                                                    className="align-items-center mb-3" 
+                                                    type="radio" 
+                                                    label="True" 
+                                                    name={`formHorizontalRadios-${question._id}`} 
+                                                    disabled
+                                                    checked={setTFChecked(questions.indexOf(question), "true")}
+                                                />
+                                                <hr />
+                                                <FormCheck 
+                                                    className="align-items-center mb-3" 
+                                                    type="radio" 
+                                                    label="False" 
+                                                    name={`formHorizontalRadios-${question._id}`} 
+                                                    disabled
+                                                    checked={setTFChecked(questions.indexOf(question), "false")}
+                                                />
+                                            </ListGroup.Item>
+                                        </Col>
+                                    </Form.Group>
+                                    </>)}
+
+                                    {question.type === "fillInTheBlank" && (
+                                    <>
+                                    {/* fillInTheBlank */}
+                                    <Form.Group as={Row} className="mb-3">
+                                        <Form.Label column sm={2} className="text-end">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    {!isIncorrect(question) && (
+                                                           <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                                                           <span style={arrowStyleRed}>Incorrect!</span>
+                                                           <span style={arrowHeadStyleRed}></span>
+                                                         </div>
+                                                    )}
+                                                    {isIncorrect(question) && (
+                                                            <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                                                            <span style={arrowStyle}>Correct!</span>
+                                                            <span style={arrowHeadStyle}></span>
+                                                          </div>
+                                                    )}
+                                                </div>
+                                        </Form.Label>
+                                        <Col sm={10} className="ms-auto">
+                                            <ListGroup.Item className="wd-quiz p-0 mb-0 fs-5 border-secondary">
+                                                <div className="wd-title d-flex align-items-center justify-content-between p-2 ps-3 bg-secondary text-dark">
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="me-2 mb-0 fw-bold fs-5"> {question.title}</span>
+                                                    </div>
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <p className="me-2 mb-0 fw-bold fs-5">Pts: {question.points}</p>
+                                                    </div>
+                                                </div> 
+                                            </ListGroup.Item>
+                                            <ListGroup.Item className="wd-quiz ps-3 p-10 mb-0 fs-5 border-secondary">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <p className="me-2 mb-0 fs-5">{question.question}</p>
+                                                </div>
+                                                <input
+                                                type="text"
+                                                className="mt-2 border px-2 py-1 rounded"
+                                                disabled
+                                                value={lastAttempt?.answers[questions.indexOf(question)]?.answer || ""}
+                                            />
+                                            </ListGroup.Item>
+                                        </Col>
+                                    </Form.Group>
+                                    
+                                    </>)}
+
+                                <br /><br />
+                                </ListGroup>
+                                ))}
+                        </Container>
+                    </div>)}
+                    </>
                 )}
             </div>
 
