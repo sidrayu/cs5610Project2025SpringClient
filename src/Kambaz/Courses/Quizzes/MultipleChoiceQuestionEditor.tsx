@@ -108,6 +108,7 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
             if (currentQuestion.type === "multipleChoice") {
                 await new Promise((resolve) => {
                     setAnswers(currentQuestion.choices);
+                    setCorrectAnswer(currentQuestion.answer);
                     resolve(null);
                 });
                 await new Promise((resolve) => {
@@ -274,6 +275,33 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
             resolve(null);
         });
     };
+
+
+    const setChecked = (choiceId: string) => {
+        if (answerIndex === choiceId) {
+            return true;
+        }
+        let cAnswer: string = correctAnswer;
+        if (!cAnswer) {
+            console.log("No answer provided, current choiceId is:", choiceId);
+            return false; // No answer provided
+        }
+        console.log("Checking multiple choice answer:", answers, "against choiceId:", choiceId);
+        return cAnswer === choiceId;
+    };
+
+    const setTFChecked = (question: any, selected: string, choice: string) => {
+        if (selected ===choice) {
+            return true;
+        }
+        let correctAns: string = question.answer
+        if (!answer) {
+            console.log("No answer provided for question:", question);
+            return false; // No answer provided
+        }
+        return correctAns === choice;
+    };
+
     return (
         <Modal show={show} onHide={handleClose} size="lg" className="modal-dialog-scrollable"
         style={{ maxHeight: "90vh" }}>
@@ -407,7 +435,9 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
                                         setIndex = {setAnswerIndex}
                                         answer={answer}
                                         deleteAnswer={deleteAnswer}
-                                        setAnswer={setAnswer} />
+                                        setAnswer={setAnswer}
+                                        setChecked={setChecked}
+                                    />
                                 ))}
                             
                             </ListGroup>
@@ -426,9 +456,9 @@ export default function MultipleChoiceQuestionEditor({ show, handleClose, questi
                             <FormLabel className="me-2 mb-0 fw-bold fs-5">
                                 Answers:
                             </FormLabel>
-                            <FormCheck className="align-items-center mb-3" type="radio" value="true" label="True" name="formHorizontalRadios" checked={selectedAnswer === "true" }
+                            <FormCheck className="align-items-center mb-3" type="radio" value="true" label="True" name="formHorizontalRadios" checked={setTFChecked(question, selectedAnswer, "true")}
                                 onChange={() => setSelectedAnswer("true")}/>
-                            <FormCheck className="align-items-center mb-3" type="radio" value="false" label="False" name="formHorizontalRadios" checked={selectedAnswer === "false"}
+                            <FormCheck className="align-items-center mb-3" type="radio" value="false" label="False" name="formHorizontalRadios" checked={setTFChecked(question, selectedAnswer, "false")}
                                 onChange={() => setSelectedAnswer("false")}/>
                         </div>
                     </>)}
