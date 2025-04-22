@@ -115,39 +115,50 @@ export default function QuizDetails() {
     const arrowStyle: React.CSSProperties = {
         display: 'inline-block',
         position: 'relative',
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#28a745',  // A softer green
         color: 'white',
-        padding: '10px 20px',
+        padding: '8px 16px',
         fontWeight: 'bold',
         borderRadius: '4px 0 0 4px',
         margin: '10px 0',
-      };
-      const arrowStyleRed: React.CSSProperties = {
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        transition: 'all 0.3s ease',
+        fontSize: '0.85rem',
+        letterSpacing: '0.5px'
+    };
+
+    const arrowStyleRed: React.CSSProperties = {
         display: 'inline-block',
         position: 'relative',
-        backgroundColor: 'red',
+        backgroundColor: '#dc3545',  // A softer red
         color: 'white',
-        padding: '10px 20px',
+        padding: '8px 16px',
         fontWeight: 'bold',
         borderRadius: '4px 0 0 4px',
         margin: '10px 0',
-      };
-      
-      const arrowHeadStyle = {
-        width: 0,
-        height: 0,
-        borderTop: '25px solid transparent',
-        borderBottom: '25px solid transparent',
-        borderLeft: '20px solid #4CAF50',
-      };
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        transition: 'all 0.3s ease',
+        fontSize: '0.85rem',
+        letterSpacing: '0.5px'
+    };
 
-      const arrowHeadStyleRed = {
+    const arrowHeadStyle = {
         width: 0,
         height: 0,
-        borderTop: '25px solid transparent',
-        borderBottom: '25px solid transparent',
-        borderLeft: '20px solid red',
-      };
+        borderTop: '20px solid transparent',
+        borderBottom: '20px solid transparent',
+        borderLeft: '16px solid #28a745',  // Matching the softer green
+        filter: 'drop-shadow(2px 2px 2px rgba(0,0,0,0.1))'
+    };
+
+    const arrowHeadStyleRed = {
+        width: 0,
+        height: 0,
+        borderTop: '20px solid transparent',
+        borderBottom: '20px solid transparent',
+        borderLeft: '16px solid #dc3545',  // Matching the softer red
+        filter: 'drop-shadow(2px 2px 2px rgba(0,0,0,0.1))'
+    };
 
 
 
@@ -240,17 +251,24 @@ export default function QuizDetails() {
                 {!isFaculty && (
                     <><div className="text-center ">
                         <Row >
-                            <Col xs="auto" className="fw-bold">Due:</Col>{quiz.untilDate}
+                            <Col xs="auto" className="fw-bold">Due:</Col>{formatDate(quiz.untilDate)}
                             <Col xs="auto" className="fw-bold">Points:</Col>{quiz.points}
                             <Col xs="auto" className="fw-bold">Questions:</Col>{questions.length}
                         </Row>
                         <Row>
-                            <Col xs="auto" className="fw-bold">Available:</Col>{quiz.availableDate}
+                            <Col xs="auto" className="fw-bold">Available:</Col>{formatDate(quiz.availableDate)}
                             <Col xs="auto" className="fw-bold">Time Limit:</Col>{quiz.timeLimit} Minutes
                             <Col xs="auto" className="fw-bold">Attempts:</Col>{quiz.numberAttempts}
                         </Row>
                         <hr/>
-                        {hasMoreAttempts() && (
+                        {new Date() < new Date(quiz.availableDate) && (
+                            <div className="text-center mb-3">
+                                <h5>This quiz is locked until {formatDate(quiz.availableDate)}</h5>
+                            </div>
+                        )}
+                        {hasMoreAttempts() && 
+                         new Date() >= new Date(quiz.availableDate) && 
+                         new Date() <= new Date(quiz.untilDate) && (
                             <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}/Start`}>
                                 <Button variant="danger" size="lg">Start Quiz</Button>
                             </Link>
@@ -258,7 +276,7 @@ export default function QuizDetails() {
                     </div>
 
                     {/* Quiz Review */}
-                    {lastAttempt && (
+                    {lastAttempt && new Date() >= new Date(quiz.availableDate) && (
                     <div className=" mt-3">
                     <Container className="border-top pt-3 mt-3">
                             {/* <p className="text-sm text-gray-600 mb-4">
