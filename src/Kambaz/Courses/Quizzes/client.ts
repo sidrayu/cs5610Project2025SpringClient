@@ -84,4 +84,28 @@ export const toggleQuizPublish = async (courseId: string, quizId: string, isPubl
 };
 
 
+// Get quiz by userId and quizId with formatted URL /api/quizAnswers/user/:userId/quiz/:quizId
+export const findLastAnswers = async (userId: string, quizId: string) => {
+    try {
+        const response = await axiosWithCredentials.get(`${REMOTE_SERVER}/api/quizAnswers/user/${userId}/quiz/${quizId}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching quiz ${quizId} for user ${userId}:`, error);
+        throw error;
+    }
+};
+
+// create/update quiz answers
+export const createQuizAnswers = async (quizAnswers: any) => {
+    try {
+        console.log("Creating quiz answers:", quizAnswers);
+        const response = await axiosWithCredentials.post(`${REMOTE_SERVER}/api/quizAnswers`, quizAnswers);
+        console.log("Quiz answers created/updated successfully:", response);
+        return response.data;
+    } catch (error) {
+        console.error(`Error creating quiz answers for quiz answers${quizAnswers}:`, error);
+        throw error;
+    }
+};
+
 

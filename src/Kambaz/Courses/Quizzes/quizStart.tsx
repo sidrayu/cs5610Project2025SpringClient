@@ -1,23 +1,13 @@
 import React, { useState } from 'react';
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import '../../styles.css'; // optional: external styling
 import { Button, ListGroup, Container, FormCheck} from 'react-bootstrap';
-import { FaPencilAlt, FaQuestionCircle } from 'react-icons/fa';
+import { FaQuestionCircle } from 'react-icons/fa';
 import { FaCheckCircle } from 'react-icons/fa';
 import { Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-const buttonStyle = {
-    backgroundColor: '#f8f9fa',
-    border: '1px solid #dee2e6',
-    color: '#6c757d',
-    padding: '6px 12px',
-    borderRadius: '4px',
-    textDecoration: 'none',
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '6px'
-};
+import * as quizClient from './client';
 
 
 // Components
@@ -27,7 +17,6 @@ const QuizStart: React.FC = () => {
     const quiz = quizzes.find((q: any) => q._id === qid);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState<{ [key: number]: string }>({});
-    const [submitted, setSubmitted] = useState(false);
     // Get current date
     const now = new Date();
 
@@ -39,6 +28,7 @@ const QuizStart: React.FC = () => {
         hour12: true,
     }).toLowerCase();
 
+    const startTime = new Date().toISOString();
     const navigate = useNavigate();
 
     const dateStr = `${now.toLocaleDateString('en-US', options)} at ${timeString}`;
@@ -46,40 +36,33 @@ const QuizStart: React.FC = () => {
     const currentQuestion = quiz.questions[currentIndex];
 
     const handleAnswer = (value: string) => {
-        setAnswers({ ...answers, [currentQuestion._id]: value });
+        console.log("Answering question...",currentIndex, value);
+        setAnswers({ ...answers, [currentIndex]: value });
     };
 
-    const isIncorrect = (question: any) => {
-        const answer: any = answers[question._id];
-        if (!answer) {
-            return false; // No answer provided
-        }
-        if (question.type === 'trueFalse') {
-            return answer.toLowerCase() === question.answer.toLowerCase();
-        } else if (question.type === 'multipleChoice') {
-            return answer === question.answer;
-        } else if (question.type === 'fillInTheBlank') {
-            for (const expectedAnswer of question.answers) {
-                if (answer.toLowerCase() === expectedAnswer.toLowerCase()) {
-                    return true; // Correct answer
-                }
-            }
-            return false; // No correct answer found
-        }
-        return false;
-    };
-
-    const score = quiz.questions.reduce((total: any, q: any) => {
-        if (submitted && isIncorrect(q)) {
-            return total + q.points;
-        }
-        return total;
-    }, 0);
     const questionCount = getQuestionCount(quiz);
 
     function getQuestionCount(quiz: any): number {
         return quiz.questions.length;
     }
+
+    const handleSubmit = async () => {
+        console.log("Submitting quiz...", answers);
+        navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`)
+        const endTime = new Date().toISOString();
+        
+        const quizAnswer = {
+            quizId: qid,
+            courseId: cid,
+            answers: answers,
+            startTime: startTime,
+            endTime: endTime,
+            userId: "userId", // Replace with actual user ID
+            points: quiz.points,
+        };
+        const res = await quizClient.createQuizAnswers(quizAnswer);
+        console.log("Quiz submitted successfully", res);
+    };
     return (
         <Container className="mt-3">
         <div className="max-w-3xl mx-auto p-6">
@@ -101,10 +84,7 @@ const QuizStart: React.FC = () => {
             <p className="text-sm text-gray-600 mb-4">
                 Started: {dateStr}
             </p>
-            <h2 className="text-xl font-semibold border-b pb-2 mb-4">Quiz Instructions</h2>
-
             <ListGroup className="rounded-0" id="wd-modules">
-
                 {currentQuestion.type === "trueFalse" && (
                     <>
                         {/* trueFalse */}
@@ -129,9 +109,8 @@ const QuizStart: React.FC = () => {
                                     type="radio"
                                     label={option}
                                     name="formHorizontalRadios"
-                                    checked={answers[currentQuestion._id]?.toLowerCase() === option.toLowerCase()}
-                                    onChange={() => handleAnswer(option)}
-                                    disabled={submitted}
+                                    checked={answers[currentIndex]?.toLowerCase() === option.toLowerCase()}
+                                    onChange={() => handleAnswer(option.toLowerCase())}
                                     key={option}
                                     id={`wd-quiz-${option}`}
                                     value={option}
@@ -165,9 +144,8 @@ const QuizStart: React.FC = () => {
                                     type="radio"
                                     label={option.title}
                                     name="formHorizontalRadios"
-                                    checked={answers[currentQuestion._id] === option._id}
+                                    checked={answers[currentIndex] === option._id}
                                     onChange={() => handleAnswer(option._id)}
-                                    disabled={submitted}
                                     key={option._id}
                                     id={`wd-quiz-${option._id}`}
                                     value={option.title}
@@ -196,31 +174,18 @@ const QuizStart: React.FC = () => {
                             <input
                                 type="text"
                                 className="mt-2 border px-2 py-1 rounded"
-                                value={answers[currentQuestion._id] || ''}
+                                value={answers[currentIndex] || ''}
                                 onChange={(e) => handleAnswer(e.target.value)}
-                                disabled={submitted}
                             />
                         </ListGroup.Item>
                     </>)}
 
                 <br /><br />
-                <ListGroup.Item className="wd-quiz ps-3 p-10 mb-0 fs-5 border-0">
-                    {submitted && !isIncorrect(currentQuestion) && (
-                        <div className="d-flex align-items-center gap-2">
-                            <p className="me-2 mb-0 fs-5 text-danger">Incorrect</p>
-                        </div>
-                    )}
-                    {submitted && isIncorrect(currentQuestion) && (
-                        <div className="d-flex align-items-center gap-2">
-                            <p className="me-2 mb-0 fs-5 text-success">Correct</p>
-                        </div>
-                    )}
-                </ListGroup.Item>
             </ListGroup>
 
             <div className="flex justify-between">
                 <button
-                    className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+                    className="px-4 py-2 me-2 bg-gray-200 rounded disabled:opacity-50"
                     onClick={() => setCurrentIndex((i) => i - 1)}
                     disabled={currentIndex === 0}
                 >
@@ -233,35 +198,26 @@ const QuizStart: React.FC = () => {
                 >
                     Next
                 </button>
-                <br/>
-        
             </div>
+            <br/>
         </div>
         <div className="d-flex justify-content-between align-items-center border p-3 mb-3">
                      <div className="text-muted">Quiz saved at 8:19am</div>
-                     <Button variant="outline-dark" onClick={() => {
-                        navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`);
+                     <Button variant="danger" onClick={() => {
+                        handleSubmit();
                     }}>Submit Quiz
                      </Button>
                  </div>
                  
 
                  <h4>Questions</h4>
-                 {/* <ListGroup variant="flush">
-                 {Array.from({ length: questionCount}, (_, index) => (
-                    <ListGroup.Item key={index} className="ps-0 border-0 d-flex align-items-center">
-                    <FaQuestionCircle className="me-2 text-muted" />
-                    <span className="text-danger fw-bold">Question {index + 1}</span>
-                    </ListGroup.Item>
-                ))}
-                </ListGroup> */}
                 <ListGroup variant="flush">
-                    {quiz.questions.map((question: any, index: number) => {
-                    const answered = !!answers[question._id];
+                    {quiz.questions.map((_question: any, index: number) => {
+                    const answered = !!answers[index];
 
                         return (
                         <ListGroup.Item
-                            key={question._id}
+                            key={index}
                             className="ps-0 border-0 d-flex align-items-center"
                         >
                             {answered ? (

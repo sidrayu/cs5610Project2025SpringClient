@@ -4,67 +4,71 @@
   "title": "Quiz1 - HTML",
   "isPublished": true,
   "type": "Graded Quiz",
-  "points": 97,
+  "points": 100,
   "group": "Quizzes",
   "shuffle": true,
   "timeLimit": 20,
-  "multipleAttempts": false,
-  "numberAttempts": 1,
+  "multipleAttempts": true,
+  "numberAttempts": 3,
   "showAnswersImmediately": false,
   "showAnswersAfter": "2025-04-15T23:59:00Z",
   "accessCode": "",
   "oneQuestionAtATime": true,
   "webcam": false,
   "lock": false,
-  "dueDate": "2025-04-10T23:59:00Z",
-  "availableDate": "2025-04-05T08:00:00Z",
-  "untilDate": "2025-04-15T23:59:00Z",
-  "assignTo": ["Everyone"],
+  "dueDate": "2025-04-18T17:08",
+  "availableDate": "2025-04-14T17:08",
+  "untilDate": "2025-04-18T17:08",
   "questions": [
     {
       "_id": "q26",
-      "title": "New Question",
+      "title": "Question1",
       "type": "multipleChoice",
       "points": 20,
-      "question": "What is the capital of France?",
+      "question": "Which HTML tag is used to insert an image?",
       "choices": [
         {
           "_id": "67fdb7be58017f573ce87f4e",
-          "title": "Berlin"
+          "title": "<img>"
         },
         {
           "_id": "67fdb7be58017f573ce87f4f",
-          "title": "Madrid"
+          "title": "<picture>"
         },
         {
           "_id": "67fdb7be58017f573ce87f50",
-          "title": "Paris"
+          "title": "<image>"
         },
         {
           "_id": "67fdb7be58017f573ce87f51",
-          "title": "Rome"
+          "title": "<src>"
         }
       ],
-      "answer": "67fdb7be58017f573ce87f4f",
+      "answer": "67fdb7be58017f573ce87f4e",
       "answers": []
     },
     {
       "_id": "q27",
-      "title": "q2 True or False Example",
-      "type": "trueFalse",
-      "points": 8,
-      "question": "The Earth is flat.1",
+      "title": "Question2",
+      "type": "fillInTheBlank",
+      "points": 10,
+      "question": "Fill in the correct HTML tag to display the heading “My First Webpage”:\n<______>My First Webpage</______>\n",
       "choices": [],
       "answer": "false",
-      "answers": []
+      "answers": [
+        "h1",
+        "h2",
+        "h3"
+      ]
     },
     {
       "_id": "q28",
-      "title": "Fill in the blank",
-      "type": "fillInTheBlank",
+      "title": "Question3",
+      "type": "trueFalse",
       "points": 15,
-      "question": "The chemical symbol for water is ___",
+      "question": "HTML is a programming language.",
       "choices": [],
+      "answer": "false",
       "answers": [
         "H2O",
         "H2o",
@@ -73,24 +77,36 @@
     },
     {
       "_id": "",
-      "title": "q4",
-      "type": "fillInTheBlank",
-      "points": 2,
-      "question": "dfdf",
+      "title": "Question4",
+      "type": "multipleChoice",
+      "points": 3,
+      "question": "What does the <br> tag do in HTML?",
       "choices": [
         {
-          "_id": "67fdb7be58017f573ce87f52",
-          "title": ""
+          "_id": "0cb2eb28-a39b-4f91-981c-b2acae7c1dab",
+          "title": " Inserts a horizontal line"
+        },
+        {
+          "_id": "bde915d3-4884-4322-bd5a-dfde19d06d8f",
+          "title": "Breaks a paragraph into columns"
+        },
+        {
+          "_id": "8d6e0baa-f2e9-4df2-ade3-0b779dcefed2",
+          "title": " Creates a page break"
+        },
+        {
+          "_id": "a7a9aabd-71ee-4633-92e6-36fd2969ef5b",
+          "title": "Inserts a line break"
         }
       ],
-      "answer": null,
+      "answer": "a7a9aabd-71ee-4633-92e6-36fd2969ef5b",
       "answers": [
         "a",
         "ab"
       ]
     },
     {
-      "_id": "",
+      "_id": "q29",
       "title": "q5",
       "type": "multipleChoice",
       "points": 20,
@@ -119,10 +135,10 @@
       ]
     },
     {
-      "_id": "",
+      "_id": "q30",
       "title": "q6",
       "type": "trueFalse",
-      "points": 1,
+      "points": 2,
       "question": "dfdf",
       "choices": [
         {
@@ -130,13 +146,13 @@
           "title": ""
         }
       ],
-      "answer": "false",
+      "answer": "",
       "answers": [
         ""
       ]
     },
     {
-      "_id": "",
+      "_id": "q31",
       "title": "q7",
       "type": "multipleChoice",
       "points": 10,
@@ -161,10 +177,10 @@
       ]
     },
     {
-      "_id": "",
+      "_id": "q32",
       "title": "q8",
       "type": "trueFalse",
-      "points": 20,
+      "points": 19,
       "question": "dfdf",
       "choices": [
         {
@@ -172,17 +188,17 @@
           "title": ""
         }
       ],
-      "answer": "false",
+      "answer": "",
       "answers": [
         ""
       ]
     },
     {
-      "_id": "",
-      "title": "q9",
+      "_id": "q33",
+      "title": "Question9",
       "type": "fillInTheBlank",
       "points": 1,
-      "question": "dfdf",
+      "question": "what is after letter c?",
       "choices": [
         {
           "_id": "",
@@ -193,17 +209,21 @@
       "answers": [
         "a",
         "b",
-        "c"
+        "c",
+        "d"
       ]
     }
   ],
-  "untildate": ""
+  "untildate": "",
+  "assignTo": [
+    "Everyone"
+  ]
 },
 {
   "_id": "quiz456",
   "course": "RS101",
   "title": "Quiz2 - CSS",
-  "isPublished": false,
+  "isPublished": true,
   "type": "Graded Quiz",
   "points": 75,
   "group": "Quizzes",
@@ -220,7 +240,6 @@
   "dueDate": "2025-05-15T23:59:00Z",
   "availableDate": "2025-05-01T08:00:00Z",
   "untilDate": "2025-05-20T23:59:00Z",
-  "assignTo": ["Everyone"],
   "questions": [
     {
       "_id": "q29",
@@ -246,7 +265,8 @@
           "title": "Universal selector (*)"
         }
       ],
-      "answer": 1
+      "answer": "1",
+      "answers": []
     },
     {
       "_id": "q30",
@@ -254,7 +274,9 @@
       "type": "trueFalse",
       "points": 20,
       "question": "The CSS box model consists of content, padding, border, and margin.",
-      "answer": 0
+      "choices": [],
+      "answer": "0",
+      "answers": []
     },
     {
       "_id": "q31",
@@ -262,6 +284,7 @@
       "type": "fillInTheBlank",
       "points": 30,
       "question": "The CSS property used to change the text color is ___",
+      "choices": [],
       "answer": "color",
       "answers": [
         "color",
@@ -269,5 +292,114 @@
         "COLOR"
       ]
     }
+  ],
+  "assignTo": [
+    "Everyone"
   ]
+},
+{
+  "_id": "7c0ce9b6-8012-4c57-9e7d-3d38dcb9e0d5",
+  "course": "RS101",
+  "title": "New Quiz2",
+  "isPublished": false,
+  "type": "Graded Quiz",
+  "points": 2,
+  "group": "Quizzes",
+  "shuffle": true,
+  "timeLimit": 0,
+  "multipleAttempts": false,
+  "numberAttempts": 1,
+  "showAnswersImmediately": true,
+  "showAnswersAfter": "",
+  "accessCode": "",
+  "oneQuestionAtATime": true,
+  "webcam": false,
+  "lock": false,
+  "dueDate": "",
+  "availableDate": "",
+  "untilDate": "",
+  "assignTo": [
+    "Everyone"
+  ],
+  "questions": [
+    {
+      "_id": "",
+      "title": "q1",
+      "type": "multipleChoice",
+      "points": 2,
+      "question": "bla",
+      "choices": [
+        {
+          "_id": "e66b76e2-c142-4ee4-9247-116d75dda451",
+          "title": "a"
+        },
+        {
+          "_id": "08204a22-8ed9-445f-8971-957c8e68fa59",
+          "title": "ab"
+        },
+        {
+          "_id": "4ba7fc74-11f9-466c-81c7-aa8149eb5b4d",
+          "title": "abc"
+        }
+      ],
+      "answer": "-1",
+      "answers": [
+        ""
+      ]
+    }
+  ],
+  "__v": 0
+},
+{
+  "_id": "9234b939-1ca0-44f0-a6eb-1372eff30a8a",
+  "course": "RS101",
+  "title": "New Quiz",
+  "isPublished": false,
+  "type": "Graded Quiz",
+  "points": 5,
+  "group": "Quizzes",
+  "shuffle": true,
+  "timeLimit": 0,
+  "multipleAttempts": false,
+  "numberAttempts": 1,
+  "showAnswersImmediately": true,
+  "showAnswersAfter": "",
+  "accessCode": "",
+  "oneQuestionAtATime": true,
+  "webcam": false,
+  "lock": false,
+  "dueDate": "",
+  "availableDate": "",
+  "untilDate": "",
+  "assignTo": [
+    "Everyone"
+  ],
+  "questions": [
+    {
+      "_id": "",
+      "title": "q1",
+      "type": "multipleChoice",
+      "points": 5,
+      "question": "adfadf",
+      "choices": [
+        {
+          "_id": "da4c34f8-8cad-4ebd-a6b4-5be642c215c1",
+          "title": "1"
+        },
+        {
+          "_id": "82f6fb53-6ae9-40f1-bc9b-f002aeecd74f",
+          "title": "12"
+        },
+        {
+          "_id": "50839c05-e8b3-4aa2-94b2-60697fbd1119",
+          "title": "123"
+        }
+      ],
+      "answer": "-1",
+      "answers": [
+        ""
+      ]
+    }
+  ],
+  "__v": 0
 }]

@@ -1,75 +1,180 @@
 [{
-  "_id": "quizAnswer123",
-  "courseId": "RS101",
-  "userId": "234",
-  "quizId": "quiz123",
-  "points": 107,
-  "attemptCount": 1,
-  "lastAttempt": {
-    "date": "2025-04-19T10:15:00Z",
-    "score": 75,
-    "timeSpent": 1200
-  },
+  "_id": "398b50d5-a898-4047-a3b7-dda6aec8eeed",
+  "__v": 0,
   "answers": [
     {
       "questionId": "0",
-      "answer": "67fdb7be58017f573ce87f50",
-      "isCorrect": true,
-      "score": 20
+      "answer": "3",
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "68074f355a68c936093a03ee"
+      }
     },
     {
       "questionId": "1",
       "answer": "false",
-      "isCorrect": true,
-      "score": 8
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "68074f355a68c936093a03ef"
+      }
     },
     {
       "questionId": "2",
-      "answer": "h2o",
+      "answer": "black",
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "68074f355a68c936093a03f0"
+      }
+    }
+  ],
+  "attemptCount": 1,
+  "courseId": "RS101",
+  "endTime": "2025-04-22T08:11:33.373Z",
+  "points": 75,
+  "quizId": "quiz456",
+  "score": 0,
+  "startTime": "2025-04-22T08:11:30.696Z",
+  "timeSpent": 2,
+  "userId": "234"
+},
+{
+  "_id": "d327b19f-4227-45c6-95a7-0f82ad8296f1",
+  "__v": 0,
+  "answers": [
+    {
+      "questionId": "0",
+      "answer": "4",
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "68074f895a68c936093a0401"
+      }
+    },
+    {
+      "questionId": "1",
+      "answer": null,
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "68074f895a68c936093a0402"
+      }
+    },
+    {
+      "questionId": "2",
+      "answer": null,
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "68074f895a68c936093a0403"
+      }
+    }
+  ],
+  "attemptCount": 2,
+  "courseId": "RS101",
+  "endTime": "2025-04-22T08:12:57.785Z",
+  "points": 75,
+  "quizId": "quiz456",
+  "score": 0,
+  "startTime": "2025-04-22T08:12:56.331Z",
+  "timeSpent": 1,
+  "userId": "234"
+},
+{
+  "_id": "7a7fbfef-0dc4-4159-90a0-040b980e75f0",
+  "__v": 0,
+  "answers": [
+    {
+      "questionId": "0",
+      "answer": "67fdb7be58017f573ce87f50",
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "6807511f5a68c936093a0471"
+      }
+    },
+    {
+      "questionId": "1",
+      "answer": "h2",
       "isCorrect": true,
-      "score": 15
+      "score": 10,
+      "_id": {
+        "$oid": "6807511f5a68c936093a0472"
+      }
+    },
+    {
+      "questionId": "2",
+      "answer": "false",
+      "isCorrect": true,
+      "score": 15,
+      "_id": {
+        "$oid": "6807511f5a68c936093a0473"
+      }
     },
     {
       "questionId": "3",
-      "answer": "good",
-      "isCorrect": true,
-      "score": 2
+      "answer": "bde915d3-4884-4322-bd5a-dfde19d06d8f",
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "6807511f5a68c936093a0474"
+      }
     },
     {
       "questionId": "4",
-      "answer": "67fdbfed58017f573ce87f89",
-      "isCorrect": true,
-      "score": 20
+      "answer": "67fdc51558017f573ce88064",
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "6807511f5a68c936093a0475"
+      }
     },
     {
       "questionId": "5",
       "answer": "false",
-      "isCorrect": true,
-      "score": 1
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "6807511f5a68c936093a0476"
+      }
     },
     {
       "questionId": "6",
-      "answer": "e5ea81e0-b748-4beb-b2ee-0faf0e2d7b57",
-      "isCorrect": true,
-      "score": 10
+      "answer": null,
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "6807511f5a68c936093a0477"
+      }
     },
     {
       "questionId": "7",
-      "answer": "false",
-      "isCorrect": true,
-      "score": 20
+      "answer": null,
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "6807511f5a68c936093a0478"
+      }
     },
     {
       "questionId": "8",
-      "answer": "Yes",
-      "isCorrect": true,
-      "score": 1
-    },
-    {
-      "questionId": "9",
-      "answer": "true",
-      "isCorrect": true,
-      "score": 10
+      "answer": null,
+      "isCorrect": false,
+      "score": 0,
+      "_id": {
+        "$oid": "6807511f5a68c936093a0479"
+      }
     }
-  ]
+  ],
+  "attemptCount": 1,
+  "courseId": "RS101",
+  "endTime": "2025-04-22T08:19:43.168Z",
+  "points": 100,
+  "quizId": "quiz123",
+  "score": 25,
+  "startTime": "2025-04-22T08:19:41.116Z",
+  "timeSpent": 2,
+  "userId": "234"
 }]
