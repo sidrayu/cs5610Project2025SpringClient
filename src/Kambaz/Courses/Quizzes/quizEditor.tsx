@@ -2,8 +2,7 @@ import Nav from "react-bootstrap/Nav";
 import {Link, useNavigate} from "react-router-dom";
 // import {Route, Routes } from "react-router";
 // import QuestionEditor from "./questionsEdtior";
-import { useLocation } from "react-router-dom";
-import { useParams } from "react-router";
+import {useLocation, useParams} from "react-router";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {updateQuiz} from "./reducer.ts";
@@ -16,7 +15,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Card } from "react-bootstrap";
 import CreatableSelect from "react-select/creatable";
-import {updateQuizById} from "./client.ts";
+import {findQuizById, updateQuizById} from "./client.ts";
 
 
 
@@ -27,12 +26,13 @@ export default function QuizEditor() {
     const dispatch = useDispatch();
 
 
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+   // @ts-expect-error
     const quizzes = useSelector((state) => state.quizzesReducer.quizzes);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const quiz = quizzes.find((q) => q._id === qid);
+    // const quizzes = useSelector((state: { quizzesReducer: { quizzes: Quiz[] } }) => state.quizzesReducer.quizzes);
+
+    const quiz = quizzes.find((q: { _id: string | undefined; }) => q._id === qid);
     const assignee  = (quiz?.assignTo || []).map((a: string) => ({
         label: a,
         value: a,
@@ -45,10 +45,13 @@ export default function QuizEditor() {
 
     useEffect(() => {
         if (quiz) {
-
-            setFormData((prev: { questions: any; }) => ({
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            setFormData((prev) => ({
                 ...quiz,
-                questions: quiz.questions ?? prev.questions ?? []
+                questions: quiz.questions ?? prev.questions ?? [],
+                points: quiz.points ?? prev.points ?? 0,
+
             }));
         }
     }, [quiz]);
@@ -81,6 +84,27 @@ export default function QuizEditor() {
 
     };
 
+    const location = useLocation();
+
+    useEffect(() => {
+        const isEditorDetailsTab = location.pathname.includes(`/Editor/Details`);
+
+        if (isEditorDetailsTab && cid && qid) {
+            const refreshQuiz = async () => {
+                try {
+                    const latest = await findQuizById(cid, qid); 
+                    dispatch(updateQuiz(latest));
+                    setFormData(latest);
+                } catch (err) {
+                    console.error("Failed to refresh quiz in Editor", err);
+                }
+            };
+
+            refreshQuiz();
+        }
+    }, [location.pathname, cid, qid]);
+
+
     const handleSave = async (publish = false) => {
         //
         // dispatch(updateQuiz(formData));
@@ -96,6 +120,7 @@ export default function QuizEditor() {
                 ...quiz,
                 ...formData,
                 isPublished: publish ? true : formData.isPublished || false,
+                questions: quiz.questions ?? [],
             };
 
             const updatedQuiz = await updateQuizById(cid, qid, merged);
@@ -164,7 +189,8 @@ export default function QuizEditor() {
                     <Form.Label><strong>Points</strong></Form.Label>
                     <Form.Control
                         type="number"
-                        value={quiz?.points || 0}
+                        // value={quiz?.points || 0}
+                        value={formData?.points || 0}
                         // onChange={(e) =>
                         //     dispatch(updateQuiz({ ...quiz, points: parseInt(e.target.value) || 0 }))
                         // }
