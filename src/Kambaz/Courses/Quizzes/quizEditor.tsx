@@ -120,6 +120,15 @@ export default function QuizEditor() {
     const handleSaveNotPublish = () => handleSave(false);
     const handleSaveAndPublish = () => handleSave(true);
 
+    const formatDateForInput = (isoString?: string): string => {
+        if (!isoString) return "";
+        const date = new Date(isoString);
+        // Convert UTC → Local
+        const localTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+        return localTime.toISOString().slice(0, 16);
+    };
+
+
 
     return (
     <div >
@@ -329,7 +338,8 @@ export default function QuizEditor() {
                             <Form.Label>Due</Form.Label>
                             <Form.Control
                                 type="datetime-local"
-                                value={quiz?.dueDate || ""}
+                                // value={quiz?.dueDate || ""}
+                                value={formatDateForInput(quiz?.dueDate)}
                                 onChange={(e) => dispatch(updateQuiz({ ...quiz, dueDate: e.target.value }))}
                             />
                         </Col>
@@ -337,7 +347,8 @@ export default function QuizEditor() {
                             <Form.Label>Available From</Form.Label>
                             <Form.Control
                                 type="datetime-local"
-                                value={quiz?.availableDate || ""}
+                                // value={quiz?.availableDate || ""}
+                                value={formatDateForInput(quiz?.availableDate)}
                                 onChange={(e) => dispatch(updateQuiz({ ...quiz, availableDate: e.target.value }))}
                             />
                         </Col>
@@ -345,7 +356,8 @@ export default function QuizEditor() {
                             <Form.Label>Until</Form.Label>
                             <Form.Control
                                 type="datetime-local"
-                                value={quiz?.untilDate || ""}
+                                // value={quiz?.untilDate || ""}
+                                value={formatDateForInput(quiz?.untilDate)}
                                 onChange={(e) => dispatch(updateQuiz({ ...quiz, untilDate: e.target.value }))}
                             />
                         </Col>
