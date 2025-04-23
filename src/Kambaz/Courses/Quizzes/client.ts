@@ -108,4 +108,17 @@ export const createQuizAnswers = async (quizAnswers: any) => {
     }
 };
 
+export const submitQuizAnswers = async (attempt: {
+    userId: string;
+    quizId: string;
+    courseId: string;
+    answers: Array<{
+        questionId: string;
+        answer: string;
+    }>;
+}) => {
+    const response = await axios.post(`${QUIZ_API}/attempts`, attempt);
+    return response.data;
+};
+
 
