@@ -1,22 +1,34 @@
-import React, { useState } from 'react';
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import '../../styles.css'; // optional: external styling
 import { Button, ListGroup, Container, FormCheck} from 'react-bootstrap';
 import { FaQuestionCircle } from 'react-icons/fa';
 import { FaCheckCircle } from 'react-icons/fa';
 import { Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 import * as quizClient from './client';
 
 
 // Components
 const QuizStart: React.FC = () => {
     const { cid, qid } = useParams();
+    const navigate = useNavigate();
     const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes);
     const quiz = quizzes.find((q: any) => q._id === qid);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState<{ [key: number]: string }>({});
+    const [timeSpent, setTimeSpent] = useState(0);
+    const startTime = new Date().toISOString();
+
+    // Add time tracking
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setTimeSpent(prev => prev + 1);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
+
     // Get current date
     const now = new Date();
 
@@ -27,9 +39,6 @@ const QuizStart: React.FC = () => {
         minute: '2-digit',
         hour12: true,
     }).toLowerCase();
-
-    const startTime = new Date().toISOString();
-    const navigate = useNavigate();
 
     const dateStr = `${now.toLocaleDateString('en-US', options)} at ${timeString}`;
 
@@ -48,7 +57,6 @@ const QuizStart: React.FC = () => {
 
     const handleSubmit = async () => {
         console.log("Submitting quiz...", answers);
-        navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`)
         const endTime = new Date().toISOString();
         
         const quizAnswer = {
@@ -57,11 +65,18 @@ const QuizStart: React.FC = () => {
             answers: answers,
             startTime: startTime,
             endTime: endTime,
+            timeSpent: timeSpent,
             userId: "userId", // Replace with actual user ID
             points: quiz.points,
         };
-        const res = await quizClient.createQuizAnswers(quizAnswer);
-        console.log("Quiz submitted successfully", res);
+        try {
+            const res = await quizClient.createQuizAnswers(quizAnswer);
+            console.log("Quiz submitted successfully", res);
+            // Navigate to quiz details page after successful submission
+            navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`);
+        } catch (error) {
+            console.error("Error submitting quiz:", error);
+        }
     };
     return (
         <Container className="mt-3">
@@ -202,11 +217,8 @@ const QuizStart: React.FC = () => {
             <br/>
         </div>
         <div className="d-flex justify-content-between align-items-center border p-3 mb-3">
-                     <div className="text-muted">Quiz saved at 8:19am</div>
-                     <Button variant="danger" onClick={() => {
-                        handleSubmit();
-                    }}>Submit Quiz
-                     </Button>
+                     <div className="text-muted">Quiz saved at {timeString}</div>
+                     <Button variant="danger" onClick={handleSubmit}>Submit Quiz</Button>
                  </div>
                  
 
